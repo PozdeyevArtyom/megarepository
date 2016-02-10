@@ -187,5 +187,43 @@ namespace Task03
         {
             return GetEnumerator();
         }
+        //переопределение стандартных методов
+        public override bool Equals(object obj)
+        {
+            DynamicArray<T> arr = obj as DynamicArray<T>;
+            if (arr == null || Length != arr.Length)
+                return false;
+            else
+            {
+                bool b = true;
+                int i = 0;
+                while (i < Length && b == true)
+                {
+                    if (!this[i].Equals(arr[i]))
+                        b = false;
+                    i++;
+                }
+                return b;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Length; i++)
+                sb.Append(this[i]);
+            return int.Parse(sb.ToString());
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Length; i++)
+            {
+                sb.Append(this[i]);
+                sb.Append(" ");
+            }
+            return sb.ToString().Substring(0, sb.ToString().Length);
+        }
     }
 }
