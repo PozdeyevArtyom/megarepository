@@ -1,0 +1,10 @@
+.menu {	
+    width: 200px; 
+	color: #9B1B1B;
+	background: #EBF05B;
+	border: solid;
+	border-color: #9B1B1B;
+	border-radius: 10px;
+	border-width: 1px;
+	box-shadow: 10px 10px 0px #9B1B1B
+}

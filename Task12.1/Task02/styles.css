@@ -1,0 +1,52 @@
+.reglabel{
+	padding-left: 20px;
+}
+
+.regform {	
+    width: 400px; 
+	font: 12pt sans-serif;
+	color: white;
+	background: #3584D9;
+	border: groove;
+	border-color: #3584D9;
+	border-width: 1px;
+}
+
+.emaillabel{
+	padding-left: 20px;
+}
+.emailtextbox{
+	width: 360px;
+	margin-left: 20px;
+	float: top;
+	margin-bottom: 20px;
+}
+
+.passlabel{
+	width: 160px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
+	float: left;
+}
+
+.passtextbox{
+	width: 160px;	
+}
+
+.repeatlabel{
+	width: 160px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	float: left;
+}
+
+.repeattextbox{
+	width: 160px;
+}
+
+.submitbtn{
+	margin-left: 20px;
+	margin-bottom: 20px;
+	background: #EBF05B;
+}
