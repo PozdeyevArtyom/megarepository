@@ -17,7 +17,6 @@ namespace Task13.Models
         public string CustomerID { get; set; }
 
         [Required(ErrorMessage = "Обязательное поле.")]
-        [Range(1, Logic.a, ErrorMessage = "Несуществующий идентификатор сотрудника")]
         public int EmployeeID { get; set; }
 
         [RegularExpression(@"^((0[13578]|1[02])-([0-2][0-9]|3[01])-[0-9]{4})|"

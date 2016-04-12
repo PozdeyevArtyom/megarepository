@@ -13,7 +13,6 @@ namespace Task13.Models
         public int OrderID { get; set; }
 
         [Required(ErrorMessage = "Обязательное поле.")]
-        [Range(1, 77, ErrorMessage = "Несуществующий идентификатор.")]
         public int ProductID { get; set; }
         
         public string ProductName { get; set; }

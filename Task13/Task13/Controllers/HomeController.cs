@@ -109,8 +109,16 @@ namespace Task13.Controllers
                                                        orderdetail.UnitPrice,
                                                        orderdetail.Quantity,
                                                        orderdetail.Discount);
-                Logic.AddDetails(orderdetail.OrderID, Detail);
-                return RedirectToAction("FullInfo", "Home", new { id = orderdetail.OrderID });
+                try
+                {
+                    Logic.AddDetails(orderdetail.OrderID, Detail);
+                    return RedirectToAction("FullInfo", "Home", new { id = orderdetail.OrderID });
+                }
+                catch(ArgumentException e)
+                {
+                    ModelState.AddModelError(e.ParamName, "Несуществующий идендификатор.");
+                    return View(orderdetail);
+                }
             }
             else
                 return View(orderdetail);
