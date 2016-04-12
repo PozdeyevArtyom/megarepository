@@ -1,0 +1,150 @@
+﻿@model Task13.Models.OrderModel
+
+@{
+    ViewBag.Title = "Заказ №" + Model.ID;
+}
+
+<div>
+    <h2>Заказ №@Model.ID</h2>
+    <table width="100%" border="1" cellpadding="10" cellspacing="10">
+        <tr>
+            <th rowspan="2">
+                ИД зак.
+            </th>
+            <th rowspan="2">
+                ИД раб.
+            </th>
+            <th rowspan="2">
+                Дата заказа
+            </th>
+            <th rowspan="2">
+                Заявленая дата
+            </th>
+            <th rowspan="2">
+                Дата доставки
+            </th>
+            <th rowspan="2">
+                Транз. пун.
+            </th>
+            <th rowspan="2">
+                Вес
+            </th>
+            <th colspan="6" align="center">
+                Получатель
+            </th>
+            <th rowspan="2">
+                Статус заказа
+            </th>
+            <th rowspan="2">
+                Цена
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Имя
+            </th>
+            <th>
+                Адрес
+            </th>
+            <th>
+                Город
+            </th>
+            <th>
+                Регион
+            </th>
+            <th>
+                Почтовый индекс
+            </th>
+            <th>
+                Страна
+            </th>
+        </tr>
+        <tr>
+            <td>
+                @Model.CustomerID
+            </td>
+            <td>
+                @Model.EmployeeID
+            </td>
+            <td>
+                @Model.OrderDate
+            </td>
+            <td>
+                @Model.RequiredDate
+            </td>
+            <td>
+                @Model.ShippedDate
+            </td>
+            <td>
+                @Model.ShipVia
+            </td>
+            <td>
+                @Model.Freight
+            </td>
+            <td>
+                @Model.ShipName
+            </td>
+            <td>
+                @Model.ShipAddress
+            </td>
+            <td>
+                @Model.ShipCity
+            </td>
+            <td>
+                @Model.ShipRegion
+            </td>
+            <td>
+                @Model.ShipPostalCode
+            </td>
+            <td>
+                @Model.ShipCountry
+            </td>
+            <td>
+                @Model.Status
+            </td>
+            <td>
+                @String.Format("{0:0.00}", Model.Price)
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <h2>Детали заказа №@Model.ID</h2>
+    <table width="100%" border="1" cellpadding="10" cellspacing="10">
+        <tr>
+            <th>
+                Product
+            </th>
+            <th>
+                UnitPrice
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Discount
+            </th>
+        </tr>
+        @foreach(Task13.Models.OrderDetailsModel detail in Model.Details)
+        {
+            <tr>
+                <td>
+                    @detail.ProductName
+                </td>
+                <td>
+                    @detail.UnitPrice
+                </td>
+                <td>
+                    @detail.Quantity
+                </td>
+                <td>
+                    @detail.Discount
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div>
+    @Html.ActionLink("Добавить детали заказа", "AddDetail", "Home", new { orderid = Model.ID }, null)
+</div>
+

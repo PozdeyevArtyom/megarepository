@@ -1,0 +1,49 @@
+﻿@model List<Task13.Models.OrderModel>
+
+@{
+    ViewBag.Title = "Заказы";
+}
+
+<div class="body-content">
+    <h3>@ViewBag.Message</h3>
+</div>
+
+<table width="100%" border="1" cellpadding="10" cellspacing="10">
+    <tr>
+        <th width="8%">
+            ID
+        </th>
+        <th width="23%">
+            Заказчик
+        </th>
+        <th width="23%">
+            Статус заказа
+        </th>
+        <th width="23%">
+            Дата заказа
+        </th>
+        <th width="23%">
+            Цена
+        </th>
+    </tr>
+    @foreach (Task13.Models.OrderModel order in Model)
+    {
+        <tr>
+            <td width="8%">
+                @Html.ActionLink(order.ID.ToString(), "FullInfo", "Home", new { id = order.ID }, null)
+            </td>
+            <td width="23%">
+                @order.CustomerID
+            </td>
+            <td width="23%">
+                @order.Status
+            </td>
+            <td width="23%">
+                @order.OrderDate
+            </td>
+            <td width="23%">
+                @String.Format("{0:0.00}", order.Price)
+            </td>
+        </tr>
+    }
+</table>

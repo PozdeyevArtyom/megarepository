@@ -1,0 +1,39 @@
+﻿@model Task13.Models.OrderDetailsModel
+
+@{
+    ViewBag.Title = "Добавление детали для заказа №" + Model.OrderID;
+}
+
+<div class="body-content">
+    @using (Html.BeginForm("AddDetail", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(oid => Model.OrderID)
+        @Html.ValidationMessageFor(pid => Model.OrderID)
+        <div class="inputitem">
+            <div class="inputlabel">ИД продукта(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(pid => Model.ProductID)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(pid => Model.ProductID)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Цена за ед. товара(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(up => Model.UnitPrice)</div>
+            <div class="hint">Десятичную часть числа отделяйте запятой. Пример: "34,53".</div>
+            <div class="errorbox">@Html.ValidationMessageFor(up => Model.UnitPrice)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Количество(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(q => Model.Quantity)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(q => Model.Quantity)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Скидка(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(up => Model.Discount)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(up => Model.Discount)</div>
+        </div>
+        <input type="submit" value="Добавить" />
+    }
+</div>
+

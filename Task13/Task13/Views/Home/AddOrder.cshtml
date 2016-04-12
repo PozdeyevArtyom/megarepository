@@ -1,0 +1,93 @@
+﻿@model Task13.Models.OrderModel
+
+@{
+    ViewBag.Title = "Добавление заказа";
+}
+
+<div class="body-content">
+    @using (Html.BeginForm("AddOrder", "Home", FormMethod.Post))
+    {
+        <div class="inputitem">
+            <div class="inputlabel">ИД заказчика(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(cid => Model.CustomerID)</div>
+            <div class="hint">Идентификатор заказчика состоит из 5 символов латинского алфавита в верхнем регистре. Чаще всего
+            используются аббревиатуры от названия заказчикаю Например, идентификатор заказчика Eastern Connection - EASTC.</div>
+            <div class="errorbox">@Html.ValidationMessageFor(cid => Model.CustomerID)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">ИД работника(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(eid => Model.EmployeeID)</div> 
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(eid => Model.EmployeeID)</div>  
+        </div>
+        <hr />
+        <div class="inputitem">
+            <div class="inputlabel">Дата заказа</div>
+            <div class="inputdiv">@Html.TextBoxFor(od => Model.OrderDate)</div> 
+            <div class="hint">Дата должна соответсвовать шаблону "MM-DD-YYYY". Пример ввода: "03-02-2001" (второе марта 2001).
+            Если дата отсутствует, оставьте поле пустым.</div>
+            <div class="errorbox">@Html.ValidationMessageFor(od => Model.OrderDate)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Заявленная дата</div>
+            <div class="inputdiv">@Html.TextBoxFor(rd => Model.RequiredDate)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(rd => Model.RequiredDate)</div>
+            </div>
+        <div class="inputitem">
+            <div class="inputlabel">Дата доставки</div>
+            <div class="inputdiv">@Html.TextBoxFor(sd => Model.ShippedDate)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(sd => Model.ShippedDate)</div>
+        </div>
+        <hr />
+        <div class="inputitem">
+            <div class="inputlabel">Количество транзитных пунктов(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(sv => Model.ShipVia)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(sv => Model.ShipVia)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Вес(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(f => Model.Freight)</div>
+            <div class="hint">Десятичную часть числа отделяйте запятой. Пример: "34,53".</div>
+            <div class="errorbox">@Html.ValidationMessageFor(f => Model.Freight)</div>
+        </div>
+        <hr />
+        <div class="inputitem">
+            <div class="inputlabel">Имя получателя(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(sn => Model.ShipName)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(sn => Model.ShipName)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Адрес получателя(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(sa => Model.ShipAddress)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(sa => Model.ShipAddress)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Город получателя(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(sct => Model.ShipCity)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(sct => Model.ShipCity)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Страна получателя(<font color="red">*</font>)</div>
+            <div class="inputdiv">@Html.TextBoxFor(scn => Model.ShipCountry)</div>
+            <div class="hint"></div>
+            <div class="errorbox">@Html.ValidationMessageFor(cid => Model.ShipCountry)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Регион получателя</div>
+            <div class="inputdiv">@Html.TextBoxFor(sr => Model.ShipRegion, new { @Value = "" })</div>
+            <div class="errorbox">@Html.ValidationMessageFor(sr => Model.ShipRegion)</div>
+        </div>
+        <div class="inputitem">
+            <div class="inputlabel">Почтовый индекс получателя</div>
+            <div class="inputdiv">@Html.TextBoxFor(spc => Model.ShipPostalCode, new { @Value = "" })</div>
+            <div class="errorbox">@Html.ValidationMessageFor(spc => Model.ShipPostalCode)</div>
+        </div>
+        <input type="submit" value="Добавить"/>
+    }
+</div>
