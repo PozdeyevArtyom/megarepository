@@ -1,0 +1,18 @@
+﻿@model FinalTask.Models.UploadedFileModel
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Загрузка файла</h2>
+
+<div class="container">
+    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multi-part/formdata" }))
+    {
+        @Html.HiddenFor(on => Model.OwnerName)
+        @Html.HiddenFor(sp => Model.SavePath)
+        <input type="file" name="UploadedFile" />
+        <div class="valid-div">@Html.ValidationMessageFor(uf => Model.UploadedFile)</div>
+        <input class="btn-lg btn-primary" type="submit" value="Загрузить" />
+    }
+</div>
+

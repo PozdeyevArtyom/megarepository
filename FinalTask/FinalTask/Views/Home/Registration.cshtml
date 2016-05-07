@@ -1,0 +1,32 @@
+﻿@model FinalTask.Models.RegistredUserModel
+
+@{
+    ViewBag.Title = "Регистрация";
+}
+<div>
+    @using (Html.BeginForm("Registration", "Home", FormMethod.Post))
+    {
+        <div class="input-box">
+            <div class="label-div">Логин<b>*</b></div>
+            <div class="input-div">@Html.TextBoxFor(x => Model.Name, new { @class = "input-lg" })</div>
+            <div class="valid-div">@Html.ValidationMessageFor(x => Model.Name)</div>
+        </div>
+        <div class="input-box">
+            <div class="label-div">Пароль<b>*</b></div>
+            <div class="input-div">@Html.PasswordFor(x => Model.Password, new { @class = "input-lg" })</div>
+            <div class="valid-div">@Html.ValidationMessageFor(x => Model.Password)</div>
+        </div>
+        <div class="input-box">
+            <div class="label-div">Повторите пароль<b>*</b></div>
+            <div class="input-div">@Html.PasswordFor(x => Model.Repeat, new { @class = "input-lg" })</div>
+            <div class="valid-div">@Html.ValidationMessageFor(x => Model.Repeat)</div>
+        </div>
+        <div class="input-box">
+            <div class="label-div">E-mail<b>*</b></div>
+            <div class="input-div">@Html.TextBoxFor(x => Model.Email, new { @class = "input-lg" })</div>
+            <div class="valid-div">@Html.ValidationMessageFor(x => Model.Email)</div>
+        </div>
+        <div class="input-box"><input class="btn-lg btn-primary" type="submit" value="Зарегистрироваться"></div>
+    }
+</div>
+

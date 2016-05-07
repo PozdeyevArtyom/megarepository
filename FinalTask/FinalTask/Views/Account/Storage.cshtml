@@ -1,0 +1,63 @@
+﻿@model FinalTask.Models.FolderModel
+
+@{
+    ViewBag.Title = "Хранилище " + User.Identity.Name;
+}
+
+@if (Model.Name.IndexOf('\\') == Model.Name.LastIndexOf('\\'))
+{
+    <h2>@Model.Name</h2>
+}
+else
+{
+    string rootfolder = Model.Name.Substring(0, Model.Name.LastIndexOf('\\'));
+    <h2>
+        @Html.ActionLink(rootfolder, "Storage", "Account",
+            new { Name = rootfolder, OwnerName = Model.OwnerName }, null)
+        @Model.Name.Substring(Model.Name.LastIndexOf('\\'))
+    </h2>
+    
+}
+
+<div class="container stotage-buttons-div">
+    @if (Model.OwnerName.Equals(User.Identity.Name))
+    {
+        <div class="div-third">
+            @Html.ActionLink("Создать подпапку", "NewFolder", "File", new { ownerName = Model.OwnerName, savePath = Model.Name },
+                new { @class = "big btn-lg btn-warning" })
+        </div>
+        <div class="div-third">
+            @Html.ActionLink("Загрузить файл", "Upload", "File", new { ownerName = Model.OwnerName, savePath = Model.Name },
+                new { @class = "big btn-lg btn-success" })
+        </div>
+        <div class="div-third">
+            @Html.ActionLink("Удалить папку", "DeleteFolder", "Account", new { @class = "big btn-lg btn-danger" })
+        </div>
+    }
+</div>
+<div class="container">
+    <table border="0" width="100%">
+        @foreach (Entities.FileEntity folder in Model.SubFolders)
+        {
+            <tr>
+                <td width="50%">
+                    <img src="~/Content/foldericon.jpg" height="26px" width="32px"/>
+                    @Html.ActionLink(folder.Name, "Storage", "Account",
+                               new { Name = Model.Name + '\\' + folder.Name, OwnerName = Model.OwnerName }, null) 
+                </td>
+                <td width="15%">Папка</td>
+                <td width="10%"></td>
+                <td width="25%">@folder.UploadDate.ToShortDateString()</td>
+            </tr>
+        }
+        @foreach (Entities.FileEntity file in Model.Files)
+        {
+            <tr>
+                <td width="50%">@file.Name</td>
+                <td width="15%">@file.Extension</td>
+                <td width="10%">@file.Size</td>
+                <td width="25%">@file.UploadDate.ToShortDateString()</td>
+            </tr>
+        }
+    </table>
+</div>

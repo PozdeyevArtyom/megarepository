@@ -1,0 +1,14 @@
+﻿@model FinalTask.Models.UserModel
+@{
+    ViewBag.Title = "Профиль " + User.Identity.Name;
+}
+<div class="container body-content">
+    <div class="profile-div">
+        <h2>@User.Identity.Name</h2>
+        <p class="profile-info">Дата регистрации: @Model.RegDate.ToShortDateString()</p>
+        <p class="profile-info">E-mail: @Model.Email</p>
+    </div>
+    @Html.ActionLink("Моё хранилище", "Storage", "Account", new { Name = '\\' + Model.Name, OwnerName = User.Identity.Name }, 
+    new { @class = "mar big btn-lg btn-info" })
+</div>
+
