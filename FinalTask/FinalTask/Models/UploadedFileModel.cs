@@ -8,18 +8,11 @@ namespace FinalTask.Models
 {
     public class UploadedFileModel
     {
-        public string OwnerName { get; set; }
-        public string SavePath { get; set; }
+        public int ParentId { get; set; }
 
         [Required(ErrorMessage = "Файл для загрузки не выбран.")]
         public HttpPostedFileBase UploadedFile { get; set; }
 
         public UploadedFileModel() { }
-        
-        public UploadedFileModel(string ownerName, string savePath)
-        {
-            OwnerName = ownerName;
-            SavePath = savePath;
-        }
     }
 }

@@ -8,6 +8,6 @@
 	[UploadDate] [datetime] NOT NULL,
 	[Downloads] [int] NULL,
 	[FullName] [nchar](200) NOT NULL,
-	[AccessType] [int] NOT NULL
-
+	[AccessType] [int] NOT NULL,
+	[ContentType] [nvarchar](100) 
 )

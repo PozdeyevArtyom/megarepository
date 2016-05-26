@@ -2,11 +2,27 @@
 
 SELECT * FROM MegaFileStorage.Files
 
-DELETE FROM MegaFileStorage.Users
+SELECT * FROM MegaFileStorage.Folders
+
+SELECT * FROM MegaFileStorage.Access
+
+UPDATE MegaFileStorage.Files SET Size = 0 WHERE Size IS NULL
+
+/*DELETE FROM MegaFileStorage.Users WHERE UserID = 3010 
 
 DELETE FROM MegaFileStorage.Files
 
-DELETE FROM MegaFileStorage.Access
+DELETE FROM MegaFileStorage.Folders
+
+DELETE FROM MegaFileStorage.Access*/
+
+DELETE FROM MegaFileStorage.Users WHERE UserName = 'MegaUser'
+
+DELETE FROM MegaFileStorage.Files WHERE FileID = 3009
+DELETE FROM MegaFileStorage.Files WHERE OwnerID = 3015
+DELETE FROM MegaFileStorage.Access WHERE AccessID = 6
+
+DELETE FROM MegaFileStorage.Folders WHERE ChID = 3009
 
 SELECT UserName FROM MegaFileStorage.Users WHERE UserName = 'Admin' AND Pass = 'p@ssword'
 
@@ -18,6 +34,7 @@ FROM MegaFileStorage.Files as f, MegaFileStorage.Users as u
 WHERE f.OwnerID = u.UserID AND u.UserName = 'Admin' AND f.[FileName] = 'file1'
 
 INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [UploadDate], [FullName], [AccessType])
-VALUES(1005, 'root', 'folder', CONVERT(DATETIME, '20160524', 101), 'Storage\Admin\root\file1.txt', 0)
+VALUES(2006, 'User1', 'folder', CONVERT(DATETIME, '20160512', 101), 'Storage\User1', 0)
 
-UPDATE MegaFileStorage.Files SET FullName = 'User2\root' WHERE FullName = 'Storage\User2\root'
+UPDATE MegaFileStorage.Files SET ContentType ='application/vnd.openxmlformats-officedocument.presentationml.presentation' WHERE FileID = 4003
+

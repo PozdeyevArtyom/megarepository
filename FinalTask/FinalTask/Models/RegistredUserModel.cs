@@ -9,6 +9,7 @@ namespace FinalTask.Models
     public class RegistredUserModel
     {
         [Required(ErrorMessage = "Обязательное поле")]
+        [RegularExpression("^[^!/\\\"<>*?,]+$", ErrorMessage = "Символы \\ / ? * < > \" ! , недопустимы.")]
         [StringLength(40, MinimumLength = 5, ErrorMessage = "Длина логина должна быть в пределах от 5 до 40 символов.")]
         public string Name { get; set; }
         

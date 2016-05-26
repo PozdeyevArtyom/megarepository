@@ -71,11 +71,11 @@ textarea {
 }
 
 .mar {
-    margin: 10px;
+    margin-top: 10px;
     display: inline-flex;
 }
 
-.stotage-buttons-div {
+.marginv {
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -87,4 +87,13 @@ textarea {
 .div-third {
     width: 33%;
     float: left;
+}
+
+.file-table {
+    padding: 10px;
+    margin-top: 10px;
+    border: solid;
+    border-width: 2px;
+    border-color: #39b3d7;
+    border-radius: 5px;
 }

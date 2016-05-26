@@ -12,22 +12,14 @@ namespace FinalTaskDAL
     {
         public DirectoryInfo Storage;
 
-        public FDAL(string path, IEnumerable<User> users)
+        public FDAL(string path)
         {
             Storage = new DirectoryInfo(path);
-            if (!Storage.Exists)
-                Storage.Create();
-            foreach(User u in users)
-                Storage.CreateSubdirectory(u.Name + "\\root");
         }
 
-        public IEnumerable<string> GetSubfolders(string name)
+        public IEnumerable<DirectoryInfo> GetSubfolders(string name)
         {
-            List<string> result = new List<string>();
-            DirectoryInfo dir = new DirectoryInfo(Storage.FullName + name);
-            foreach (DirectoryInfo d in dir.EnumerateDirectories())
-                result.Add(name + "\\" + d.Name);
-            return result;
+            return new DirectoryInfo(Storage.FullName + name).EnumerateDirectories();
         }
 
         public IEnumerable<FileInfo> GetFiles(string name)
@@ -35,12 +27,23 @@ namespace FinalTaskDAL
             return new DirectoryInfo(Storage.FullName + name).EnumerateFiles();
         }
 
-        public string CreateFolder(string rootname, string foldername)
+        public void CreateFolder(FileEntity root, string foldername)
         {
-            rootname = rootname.Trim('\\');
-            foldername = foldername.Trim('\\');
-            string s = Storage.CreateSubdirectory(rootname + '\\' + foldername).FullName;
-            return s.Substring(s.IndexOf(Storage.FullName) + Storage.FullName.Length);
+            Storage.CreateSubdirectory(root.FullName + '\\' + foldername);
+        }
+
+        public string GetPath()
+        {
+            return Storage.FullName;
+        }
+
+        public void RemoveFile(FileEntity file)
+        {
+            if (file.Extension == "folder")
+                new DirectoryInfo(Storage.FullName + '\\' + file.FullName).Delete();
+            else
+                new FileInfo(Storage.FullName + '\\' + file.FullName).Delete();
+            return;
         }
     }
 }

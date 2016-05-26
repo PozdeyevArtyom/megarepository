@@ -232,6 +232,7 @@
     <None Include="Scripts\Tasks\Task_13.4.sql" />
     <None Include="Scripts\Tasks\Task_06.6.sql" />
     <None Include="Scripts\Tasks\Query.sql" />
+    <None Include="Scripts\Tasks\Test.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Permissions.sql" />

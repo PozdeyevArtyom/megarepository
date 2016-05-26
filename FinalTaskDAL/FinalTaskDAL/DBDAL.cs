@@ -12,27 +12,22 @@ namespace FinalTaskDAL
     public class DBDAL : IDAL
     {
         public string ConnectionString;
-        public string Storage = "Storage";
 
         public DBDAL(string connectionstring)
         {
             ConnectionString = connectionstring;
         }
 
-        public DBDAL(string connectionstring, string storage)
+        public bool AddFile(int parid, FileEntity file)
         {
-            ConnectionString = connectionstring;
-            Storage = storage;
-        }
-
-        public bool AddFile(FileEntity file)
-        {
-            if (GetUserByName(file.Owner.Name) == null)
-                throw new ArgumentException("Недопустимое значение параметра.", "UserName");
+            bool r;
+            if (GetFileByFullName(file.FullName) != null)
+                throw new ArgumentException("Файл с таким именем уже существует.", "UploadedFile");
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Files (OwnerID, FileName, Extension, Size,"
-                    + " UploadDate, Downloads, FullName, AccessType) VALUES(@oid, @n, @e, @s, @ud, @d, @fn, @at)");
+                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Files (OwnerID, FileName, Extension, "
+                    + "Size, UploadDate, Downloads, FullName, AccessType, ContentType) VALUES(@oid, @n, @e, @s, @ud, "
+                    + "@d, @fn, @at, @ct)");
                 command.Connection = connection;
                 command.Parameters.AddWithValue("@oid", file.Owner.ID);
                 command.Parameters.AddWithValue("@n", file.Name);
@@ -40,12 +35,28 @@ namespace FinalTaskDAL
                 command.Parameters.AddWithValue("@s", file.Size);
                 command.Parameters.AddWithValue("@ud", file.UploadDate);
                 command.Parameters.AddWithValue("@d", file.Downloads);
-                command.Parameters.AddWithValue("@fn", file.Access);
+                command.Parameters.AddWithValue("@fn", file.FullName);
+                command.Parameters.AddWithValue("@at", file.Access);
+                command.Parameters.AddWithValue("@ct", file.ContentType);
+
+                connection.Open();
+
+                r = command.ExecuteNonQuery() == 1;
+                if (!r) return r;
+            }
+
+            int chid = GetFileByFullName(file.FullName).Id;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Folders (ChID, ParID) VALUES(@c, @p)");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@c", chid);
+                command.Parameters.AddWithValue("@p", parid);
 
                 connection.Open();
 
                 return command.ExecuteNonQuery() == 1;
-
             }
         }
 
@@ -55,9 +66,11 @@ namespace FinalTaskDAL
                 throw new ArgumentException("Такой логин уже занят.", "Name");
             if (CheckEmail(user.Email))
                 throw new ArgumentException("Пользователь с таким e-mail уже зарегистрирован.", "Email");
+
+            bool result = true;
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Users (UserName, Pass, RegistrationDate, " 
+                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Users (UserName, Pass, RegistrationDate, "
                     + "UserType, Email) VALUES(@un, @p, @rd, @ut, @e)");
                 command.Connection = connection;
                 command.Parameters.AddWithValue("@un", user.Name);
@@ -68,8 +81,31 @@ namespace FinalTaskDAL
 
                 connection.Open();
 
-                return command.ExecuteNonQuery() == 1;
+                result &= command.ExecuteNonQuery() == 1;
             }
+
+            user = GetUserByName(user.Name);
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Files (OwnerID, FileName, Extension,"
+                    + " UploadDate, FullName, AccessType, Size) VALUES(@oid, @n, @e, @ud, @fn, @at, @s)");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@oid", user.ID);
+                command.Parameters.AddWithValue("@n", user.Name);
+                command.Parameters.AddWithValue("@e", "folder");
+                command.Parameters.AddWithValue("@ud", DateTime.Now);
+                command.Parameters.AddWithValue("@fn", user.Name);
+                command.Parameters.AddWithValue("@at", 0);
+                command.Parameters.AddWithValue("@s", 0);
+
+                connection.Open();
+
+                result &= command.ExecuteNonQuery() == 1;
+            }
+
+            result &= CreateSubFolder(GetFileByFullName(user.Name), "root");
+            return result;
         }
 
         public IEnumerable<FileEntity> GetAccessedFilesForUser(User user)
@@ -99,7 +135,7 @@ namespace FinalTaskDAL
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 SqlCommand command = new SqlCommand("SELECT FileID, OwnerID, [FileName], Extension, Size, UploadDate, "
-                    + "Downloads, FullName, AccessType");
+                    + "Downloads, FullName, AccessType, ContentType FROM MegaFileStorage.Files");
                 command.Connection = connection;
 
                 connection.Open();
@@ -112,12 +148,14 @@ namespace FinalTaskDAL
                         file.Id = reader.GetInt32(0);
                         file.Owner = new User();
                         file.Owner.ID = reader.GetInt32(1);
-                        file.Name = reader.GetString(2);
-                        file.Extension = reader.GetString(3);
-                        file.Size = reader.GetInt32(4);
+                        file.Name = reader.GetString(2).Trim();
+                        file.Extension = reader.GetString(3).Trim();
+                        if (!reader.IsDBNull(4))
+                            file.Size = reader.GetInt32(4);
                         file.UploadDate = reader.GetDateTime(5);
-                        file.Downloads = reader.GetInt32(6);
-                        file.FullName = reader.GetString(7);
+                        if (!reader.IsDBNull(6))
+                            file.Downloads = reader.GetInt32(6);
+                        file.FullName = reader.GetString(7).Trim();
                         switch (reader.GetInt32(8))
                         {
                             case 0:
@@ -130,6 +168,10 @@ namespace FinalTaskDAL
                                 file.Access = AccessType.Limited;
                                 break;
                         }
+                        if (!reader.IsDBNull(9))
+                            file.ContentType = reader.GetString(9);
+
+                        files.Add(file);
                     }
                 }
 
@@ -145,7 +187,7 @@ namespace FinalTaskDAL
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 SqlCommand command = new SqlCommand("SELECT FileID, [FileName], Extension, Size, UploadDate, "
-                    + "Downloads, FullName, AccessType WHERE OwnerID = @oid");
+                    + "Downloads, FullName, AccessType, ContentType WHERE OwnerID = @oid");
                 command.Connection = connection;
                 command.Parameters.AddWithValue("@oid", user.ID);
 
@@ -158,12 +200,14 @@ namespace FinalTaskDAL
                         FileEntity file = new FileEntity();
                         file.Id = reader.GetInt32(0);
                         file.Owner = user;
-                        file.Name = reader.GetString(1);
-                        file.Extension = reader.GetString(2);
-                        file.Size = reader.GetInt32(3);
+                        file.Name = reader.GetString(1).Trim();
+                        file.Extension = reader.GetString(2).Trim();
+                        if(!reader.IsDBNull(3))
+                            file.Size = reader.GetInt32(3);
                         file.UploadDate = reader.GetDateTime(4);
-                        file.Downloads = reader.GetInt32(5);
-                        file.FullName = reader.GetString(6);
+                        if (!reader.IsDBNull(5))
+                            file.Downloads = reader.GetInt32(5);
+                        file.FullName = reader.GetString(6).Trim();
                         switch (reader.GetInt32(7))
                         {
                             case 0:
@@ -176,6 +220,8 @@ namespace FinalTaskDAL
                                 file.Access = AccessType.Limited;
                                 break;
                         }
+                        if (!reader.IsDBNull(8))
+                            file.ContentType = reader.GetString(8);
                     }
                 }
 
@@ -223,7 +269,7 @@ namespace FinalTaskDAL
                         User user = new User();
                         user.ID = reader.GetInt32(0);
                         user.Name = reader.GetString(1).Trim();
-                        user.Password = reader.GetString(2);
+                        user.Password = reader.GetString(2).Trim();
                         user.RegDate = reader.GetDateTime(3);
                         switch(reader.GetInt32(4))
                         {
@@ -234,6 +280,7 @@ namespace FinalTaskDAL
                                 user.Type = UserType.User;
                                 break;
                         }
+                        user.Email = reader.GetString(5).Trim();
                         users.Add(user);
                     }
                 }
@@ -247,7 +294,7 @@ namespace FinalTaskDAL
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 SqlCommand command = new SqlCommand("SELECT FileID, OwnerID, [FileName], Extension, Size, UploadDate, "
-                    + "Downloads, FullName, AccessType FROM MegaFileStorage.Files WHERE FileID = @fid");
+                    + "Downloads, FullName, AccessType, ContentType FROM MegaFileStorage.Files WHERE FileID = @fid");
                 command.Connection = connection;
                 command.Parameters.AddWithValue("@fid", id);
 
@@ -261,12 +308,14 @@ namespace FinalTaskDAL
                         file.Id = reader.GetInt32(0);
                         file.Owner = new User();
                         file.Owner.ID = reader.GetInt32(1);
-                        file.Name = reader.GetString(2);
-                        file.Extension = reader.GetString(3);
-                        file.Size = reader.GetInt32(4);
+                        file.Name = reader.GetString(2).Trim();
+                        file.Extension = reader.GetString(3).Trim();
+                        if (!reader.IsDBNull(4))
+                            file.Size = reader.GetInt32(4);
                         file.UploadDate = reader.GetDateTime(5);
-                        file.Downloads = reader.GetInt32(6);
-                        file.FullName = reader.GetString(7);
+                        if (!reader.IsDBNull(6))
+                            file.Downloads = reader.GetInt32(6);
+                        file.FullName = reader.GetString(7).Trim();
                         switch (reader.GetInt32(8))
                         {
                             case 0:
@@ -279,6 +328,8 @@ namespace FinalTaskDAL
                                 file.Access = AccessType.Limited;
                                 break;
                         }
+                        if (!reader.IsDBNull(9))
+                            file.ContentType = reader.GetString(9);
                     }
                 }
 
@@ -360,21 +411,7 @@ namespace FinalTaskDAL
             }
             return user;
         }
-
-        public bool RemoveFile(string filename)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                SqlCommand command = new SqlCommand("DELETE FROM MegaFileStorage.Files WHERE FileName = @fn");
-                command.Connection = connection;
-                command.Parameters.AddWithValue("@fn", filename);
-
-                connection.Open();
-
-                return command.ExecuteNonQuery() == 1;
-            }
-        }
-
+        
         public bool RemoveUser(string username)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -384,6 +421,13 @@ namespace FinalTaskDAL
                 command.Parameters.AddWithValue("@un", username);
 
                 connection.Open();
+
+                int id = GetUserByName(username).ID;
+
+                if (command.ExecuteNonQuery() != 1) return false;
+
+                command.CommandText = "DELETE FROM MegaFileStorage.Access WHERE UserID = @uid";
+                command.Parameters.AddWithValue("@uid", id);
 
                 return command.ExecuteNonQuery() == 1;
             }
@@ -434,17 +478,14 @@ namespace FinalTaskDAL
             }
         }
 
-        public FileEntity GetFileByNameOwnedByUser(string filename, string username)
+        public FileEntity GetFileByFullName(string filename)
         {
             FileEntity file = null;
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                SqlCommand command = new SqlCommand("SELECT f.FileID, f.OwnerID, f.[FileName], f.Extension, f.Size, "
-                    + "f.UploadDate, f.Downloads, f.FullName, f.AccessType FROM MegaFileStorage.Files as f, "
-                    + "MegaFileStorage.Users as u WHERE f.OwnerID = u.UserID AND u.UserName = @un AND f.FileName = "
-                    + "@fn");
+                SqlCommand command = new SqlCommand("SELECT FileID, OwnerID, [FileName], Extension, Size, UploadDate, "
+                    + "Downloads, FullName, AccessType FROM MegaFileStorage.Files WHERE FullName = @fn");
                 command.Connection = connection;
-                command.Parameters.AddWithValue("@un", username);
                 command.Parameters.AddWithValue("@fn", filename);
 
                 connection.Open();
@@ -458,10 +499,12 @@ namespace FinalTaskDAL
                         file.Owner = new User { ID = reader.GetInt32(1) };
                         file.Name = reader.GetString(2).Trim();
                         file.Extension = reader.GetString(3).Trim();
-                        file.Size = reader.GetInt32(4);
+                        if (!reader.IsDBNull(4))
+                            file.Size = reader.GetInt32(4);
                         file.UploadDate = reader.GetDateTime(5);
-                        file.Downloads = reader.GetInt32(6);
-                        file.FullName = reader.GetString(7);
+                        if (!reader.IsDBNull(6))
+                            file.Downloads = reader.GetInt32(6);
+                        file.FullName = reader.GetString(7).Trim();
                         switch (reader.GetInt32(8))
                         {
                             case 0:
@@ -479,16 +522,193 @@ namespace FinalTaskDAL
             }
             return file;
         }
+        
+        public bool CreateSubFolder(FileEntity root, string name)
+        {
+            if (GetFileId(root.FullName + '\\' + name) != -1)
+                throw new ArgumentException("Существующее имя каталога.", "Name");
+            bool r = true;
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Files (OwnerID, FileName, Extension,"
+                    + " UploadDate, FullName, AccessType, Size) VALUES(@oid, @n, @e, @ud, @fn, @at, @s)");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@oid", root.Owner.ID);
+                command.Parameters.AddWithValue("@n", name);
+                command.Parameters.AddWithValue("@e", "folder");
+                command.Parameters.AddWithValue("@ud", DateTime.Now);
+                command.Parameters.AddWithValue("@fn", root.FullName + '\\' + name);
+                command.Parameters.AddWithValue("@at", 0);
+                command.Parameters.AddWithValue("@s", 0);
 
-        public bool CheckFolderName(string name, int userid)
+                connection.Open();
+
+                r &= command.ExecuteNonQuery() == 1;
+            }
+
+            if (!r) return r;
+
+            int chid = GetFileId(root.FullName + '\\' + name);
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Folders (ChID, ParID) VALUES(@cd, @pd)");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@cd", chid);
+                command.Parameters.AddWithValue("@pd", root.Id);
+
+                connection.Open();
+
+                r &= command.ExecuteNonQuery() == 1;
+            }
+
+            return r;
+        }
+
+        public int GetFileId(string fullname)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                SqlCommand command = new SqlCommand("SELECT FileName FROM MegaFileStorage.Files WHERE FullName = @fn AND "
-                    + "OwnerID = @oid");
+                SqlCommand resultcommand = new SqlCommand("SELECT FileID FROM MegaFileStorage.Files WHERE FullName = @fn");
+                resultcommand.Connection = connection;
+                resultcommand.Parameters.AddWithValue("@fn", fullname);
+
+                connection.Open();
+
+                using (SqlDataReader reader = resultcommand.ExecuteReader())
+                    if (reader.Read())
+                        return reader.GetInt32(0);
+                    else
+                        return -1;
+            }
+        }
+
+        public IEnumerable<FileEntity> GetChildren(int id, bool f)
+        {
+            List<int> ids = new List<int>();
+            List<FileEntity> files = new List<FileEntity>();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SELECT ChID FROM MegaFileStorage.Folders WHERE ParID=@id");
                 command.Connection = connection;
-                command.Parameters.AddWithValue("@fn", name);
-                command.Parameters.AddWithValue("@oid", userid);
+                command.Parameters.AddWithValue("@id", id);
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                        ids.Add(reader.GetInt32(0));
+                }
+
+                foreach(int i in ids)
+                {
+                    if(f)
+                    {
+                        command.CommandText = "SELECT OwnerID, FileName, UploadDate, FullName, AccessType, Size FROM "
+                            + "MegaFileStorage.Files WHERE FileID = @fid AND Extension = 'folder'";
+
+                        command.Parameters.AddWithValue("@fid", i);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                FileEntity folder = new FileEntity();
+                                folder.Id = i;
+                                folder.Owner = new User() { ID = reader.GetInt32(0) };
+                                folder.Name = reader.GetString(1).Trim();
+                                folder.UploadDate = reader.GetDateTime(2);
+                                folder.FullName = reader.GetString(3).Trim();
+                                switch (reader.GetInt32(4))
+                                {
+                                    case 0:
+                                        folder.Access = AccessType.Private;
+                                        break;
+                                    case 1:
+                                        folder.Access = AccessType.Public;
+                                        break;
+                                    default:
+                                        folder.Access = AccessType.Limited;
+                                        break;
+                                }
+                                folder.Size = reader.GetInt32(5);
+                                files.Add(folder);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        command.CommandText = "SELECT OwnerID, FileName, Extension, Size, UploadDate, Downloads, "
+                            + "FullName, AccessType FROM MegaFileStorage.Files WHERE FileID = @fid AND NOT Extension "
+                            + "= 'folder'";
+
+                        command.Parameters.AddWithValue("@fid", i);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                FileEntity file = new FileEntity();
+                                file.Id = i;
+                                file.Owner = new User() { ID = reader.GetInt32(0) };
+                                file.Name = reader.GetString(1).Trim();
+                                file.Extension = reader.GetString(2).Trim();
+                                file.Size = reader.GetInt32(3);
+                                file.UploadDate = reader.GetDateTime(4);
+                                file.Downloads = reader.GetInt32(5);
+                                file.FullName = reader.GetString(6).Trim();
+                                switch (reader.GetInt32(7))
+                                {
+                                    case 0:
+                                        file.Access = AccessType.Private;
+                                        break;
+                                    case 1:
+                                        file.Access = AccessType.Public;
+                                        break;
+                                    default:
+                                        file.Access = AccessType.Limited;
+                                        break;
+                                }
+                                files.Add(file);
+                            }
+                        }
+                    }
+
+                    command.Parameters.Clear();
+                }
+
+                for (int i = 0; i < files.Count; i++)
+                    files[i].Owner = GetUserById(files[i].Owner.ID);
+            }
+            return files;
+        }
+
+        public int GetParentId(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SELECT ParID FROM MegaFileStorage.Folders WHERE ChID = @id");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@id", id);
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
+                        return reader.GetInt32(0);
+                    else
+                        return -1;
+            }
+        }
+
+        public bool HasAccess(int userid, int fileid)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SELECT * FROM MegaFileStorage.Access WHERE UserID = @uid AND "
+                    + "FileID = @fid");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@uid", userid);
+                command.Parameters.AddWithValue("@fid", fileid);
 
                 connection.Open();
 
@@ -497,27 +717,213 @@ namespace FinalTaskDAL
             }
         }
 
-        public bool CreateSubFolder(string name, User user)
+        public bool ChangeAccess(FileEntity file, AccessType accesstype)
         {
-            user = GetUserByName(user.Name);
-            if (CheckFolderName(name, user.ID))
-                throw new ArgumentException("Существующее имя каталога.", "Name");
+            bool r;
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                SqlCommand command = new SqlCommand("INSERT INTO MegaFileStorage.Files (OwnerID, FileName, Extension,"
-                    + " UploadDate, FullName, AccessType) VALUES(@oid, @n, @e, @ud, @fn, @at)");
+                SqlCommand command = new SqlCommand("UPDATE MegaFileStorage.Files SET AccessType = @at WHERE "
+                    + "FileID = @fid");
                 command.Connection = connection;
-                command.Parameters.AddWithValue("@oid", user.ID);
-                command.Parameters.AddWithValue("@n", name.Substring(name.LastIndexOf('\\') + 1));
-                command.Parameters.AddWithValue("@e", "folder");
-                command.Parameters.AddWithValue("@ud", DateTime.Now);
-                command.Parameters.AddWithValue("@fn", name);
+                command.Parameters.AddWithValue("@at", (int)accesstype);
+                command.Parameters.AddWithValue("@fid", file.Id);
+
+                connection.Open();
+
+                r = command.ExecuteNonQuery() == 1;
+                if (!r) return r;
+                
+                switch (accesstype)
+                {
+                    case AccessType.Private:
+                    case AccessType.Public:
+                        command.CommandText = "DELETE FROM MegaFileStorage.Access WHERE FileID = @fid";
+
+                        r = command.ExecuteNonQuery() == 1;
+                        break;
+                    case AccessType.Limited:
+                        command.CommandText = "INSERT INTO MegaFileStorage.Access (UserID, FileID) VALUES(@uid, @fid)";
+                        command.Parameters.AddWithValue("@uid", file.Owner.ID);
+
+                        r = command.ExecuteNonQuery() == 1;
+                        break;
+                }
+            }
+            return r;
+        }
+
+        public bool RemoveAccess(int userid, int fileid)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("DELETE FROM MegaFileStorage.Access WHERE FileID = @fid AND "
+                    + "UserID = @uid");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@fid", fileid);
+                command.Parameters.AddWithValue("@uid", userid);
 
                 connection.Open();
 
                 return command.ExecuteNonQuery() == 1;
-
             }
+        }
+
+        public bool GrantAccess(int userid, int fileid)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SELECT AccessID FROM MegaFileStorage.Access WHERE FileID = @fid AND "
+                    + "UserID = @uid");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@fid", fileid);
+                command.Parameters.AddWithValue("@uid", userid);
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
+                        return false;
+
+                command.CommandText = "INSERT INTO MegaFileStorage.Access (FileID, UserID) VALUES(@fid, @uid)";
+                return command.ExecuteNonQuery() == 1;
+            }
+        }
+
+        public int GetUserType(string username)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SELECT UserType FROM MegaFileStorage.Users WHERE UserName = @un");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@un", username);
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
+                        return reader.GetInt32(0);
+                return -1;
+            }
+        }
+
+        public bool ChangePasswordForUser(string username, string newpass)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("UPDATE MegaFileStorage.Users SET Pass = @np WHERE UserName = @un");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@np", newpass);
+                command.Parameters.AddWithValue("@un", username);
+
+                connection.Open();
+
+                return command.ExecuteNonQuery() == 1;
+            }
+        }
+
+        public bool ChangeEmailForUser(string username, string newemail)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("UPDATE MegaFileStorage.Users SET Email = @e WHERE UserName = @un");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@e", newemail);
+                command.Parameters.AddWithValue("@un", username);
+
+                connection.Open();
+
+                return command.ExecuteNonQuery() == 1;
+            }
+        }
+
+        public bool CheckEmailForUser(string username, string email)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("SELECT UserName FROM MegaFileStorage.Users WHERE UserName = @un "
+                    + "AND Email = @e");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@un", username);
+                command.Parameters.AddWithValue("@e", email);
+
+                connection.Open();
+
+                using (SqlDataReader r = command.ExecuteReader())
+                    return r.HasRows;
+            }
+        }
+
+        public bool RemoveFile(int id)
+        {
+            bool r;
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("DELETE FROM MegaFileStorage.Files WHERE FileID = @fid");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@fid", id);
+
+                connection.Open();
+
+                r = command.ExecuteNonQuery() == 1;
+                if (!r) return r;
+
+                command.CommandText = "DELETE FROM MegaFileStorage.Access WHERE FileID = @fid";
+
+                r = command.ExecuteNonQuery() == 1;
+                if (!r) return r;
+
+                command.CommandText = "DELETE FROM MegaFileStorage.Folders WHERE ChID = @fid OR ParID = @fid";
+
+                r = command.ExecuteNonQuery() == 1;
+            }
+            return r;
+        }
+
+        public bool Download(int fileid)
+        {
+            if (GetFileById(fileid).Extension == "folder")
+                throw new ArgumentException("Неверный параметр.", "fileid");
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("UPDATE MegaFileStorage.Files SET Downloads = Downloads + 1 WHERE "
+                    + "FileID = @fid");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@fid", fileid);
+
+                connection.Open();
+
+                return command.ExecuteNonQuery() == 1;
+            }
+        }
+
+        public bool ChangeDirSize(int dirid, int amount)
+        {
+            if (GetFileById(dirid).Extension != "folder")
+                throw new ArgumentException("Неверный параметр.", "fileid");
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand("UPDATE MegaFileStorage.Files SET Size = Size + @a WHERE "
+                    + "FileID = @fid");
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@fid", dirid);
+                command.Parameters.AddWithValue("@a", amount);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() != 1) return false;
+
+                int rootid = GetParentId(dirid);
+                while(rootid != -1)
+                {
+                    command.Parameters.Clear();
+                    command.Parameters.AddWithValue("@fid", rootid);
+                    command.Parameters.AddWithValue("@a", amount);
+
+                    if (command.ExecuteNonQuery() != 1) return false;
+                    rootid = GetParentId(rootid);
+                }
+            }
+            return true;
         }
     }
 }

@@ -21,7 +21,11 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Загрузить файлы", "Index", "Home")</li>
+                    @if(User.IsInRole("Admin"))
+                    {
+                        <li>@Html.ActionLink("Поиск файлов", "Search", "Home")</li>
+                        <li>@Html.ActionLink("Список пользователей", "UserList", "Home")</li>
+                    }
                 </ul>
                 <ul class="nav navbar-nav right-menu">
                     @{

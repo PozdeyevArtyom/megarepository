@@ -1,0 +1,19 @@
+﻿@model int
+
+@{
+    ViewBag.Title = "Download";
+}
+<center>
+    @if (Model != -1)
+    {
+        <text>Извините, у вас нет прав для скачивания этого файла.</text><br />
+        @Html.ActionLink("Вернуться на главную", "Index", "Home")<br />
+        @Html.ActionLink("Вернуться в родительский каталог", "Storage", "Account", new { id = Model }, null)
+    }
+    else
+    {
+        <text>Неверный идентификатор.</text><br />
+        @Html.ActionLink("Вернуться на главную", "Index", "Home")<br />
+    }
+</center>
+

@@ -11,6 +11,7 @@ namespace FinalTask.Models
         public string Name { get; set; }
         public DateTime RegDate { get; set; }
         public string Email { get; set; }
+        public int RootId { get; set; }
 
         public UserModel() { }
 
@@ -19,11 +20,12 @@ namespace FinalTask.Models
             Name = name;
         }
 
-        public UserModel(User user)
+        public UserModel(User user, int rootid)
         {
             Name = user.Name;
             RegDate = user.RegDate;
             Email = user.Email;
+            RootId = rootid;
         }
     }
 }

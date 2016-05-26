@@ -68,6 +68,7 @@
     <Build Include="MegaFileStorage\Tables\Files.table.sql" />
     <Build Include="MegaFileStorage.sql" />
     <Build Include="MegaFileStorage\Tables\Access.Table.sql" />
+    <Build Include="MegaFileStorage\Tables\Folders.Table.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="FinalTaskDatabase.refactorlog" />
@@ -76,5 +77,6 @@
     <None Include="MegaFileStorage\Scripts\Users.sql" />
     <None Include="MegaFileStorage\Scripts\Test.sql" />
     <None Include="MegaFileStorage\Scripts\Files.sql" />
+    <None Include="MegaFileStorage\Scripts\Folders.sql" />
   </ItemGroup>
 </Project>

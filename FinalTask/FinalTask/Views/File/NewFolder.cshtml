@@ -8,8 +8,7 @@
 <div class="container">
     @using (Html.BeginForm("NewFolder", "File", FormMethod.Post, new { enctype = "multi-part/formdata" }))
     {
-        @Html.HiddenFor(on => Model.OwnerName)
-        @Html.HiddenFor(sp => Model.SavePath)
+        @Html.HiddenFor(pf => Model.ParentId)
         <div class="input-div">@Html.TextBoxFor(n => Model.Name)</div>
         <div class="valid-div">@Html.ValidationMessageFor(uf => Model.Name)</div>
         <input class="btn-lg btn-primary" type="submit" value="Создать" />

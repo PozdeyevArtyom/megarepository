@@ -1,14 +1,57 @@
 ﻿@model FinalTask.Models.UserModel
 @{
-    ViewBag.Title = "Профиль " + User.Identity.Name;
+    ViewBag.Title = "Профиль " + Model.Name;
 }
 <div class="container body-content">
     <div class="profile-div">
-        <h2>@User.Identity.Name</h2>
+        <h2>@Model.Name</h2>
         <p class="profile-info">Дата регистрации: @Model.RegDate.ToShortDateString()</p>
-        <p class="profile-info">E-mail: @Model.Email</p>
+        <p class="profile-info">E-mail: 
+            @{
+                string s = "";
+                for (int i = 3; i < Model.Email.IndexOf('@'); i++)
+                {
+                    s += '*';
+                }
+                s = Model.Email.Substring(0, 3) + s + Model.Email.Substring(Model.Email.IndexOf('@'));
+                <text>@s</text>
+            }       
+        </p>
     </div>
-    @Html.ActionLink("Моё хранилище", "Storage", "Account", new { Name = '\\' + Model.Name, OwnerName = User.Identity.Name }, 
-    new { @class = "mar big btn-lg btn-info" })
+    @if (Model.Name.Equals(User.Identity.Name))
+    {
+        <p>
+            @Html.ActionLink("Моё хранилище", "Storage", "Account", new { id = Model.RootId },
+            new { @class = "mar big btn-lg btn-info" })
+        </p>
+        <p>
+            @Html.ActionLink("Изменить пароль", "ChangePassword", "Account", new { name = Model.Name },
+                new { @class = "mar big btn-lg btn-primary" })
+            @Html.ActionLink("Изменить E-mail", "ChangeEmail", "Account", new { name = Model.Name },
+                new { @class = "mar big btn-lg btn-primary" })
+        </p>
+    }
+    else if (!User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Хранилище " + Model.Name, "Storage", "Account", new { id = Model.RootId },
+            new { @class = "mar big btn-lg btn-info" })
+    }
+    else
+    {
+        <p>
+            @Html.ActionLink("Хранилище " + Model.Name, "Storage", "Account", new { id = Model.RootId },
+            new { @class = "mar big btn-lg btn-info" })
+        </p>
+        <p>
+            @Html.ActionLink("Изменить пароль", "ChangePassword", "Account", new { name = Model.Name },
+                new { @class = "mar big btn-lg btn-primary" })
+            @Html.ActionLink("Изменить E-mail", "ChangeEmail", "Account", new { name = Model.Name },
+                new { @class = "mar big btn-lg btn-primary" })
+        </p>
+        <p>
+            @Html.ActionLink("Удалить пользователя", "RemoveUser", "Account", new { name = Model.Name },
+                    new { @class = "mar big btn-lg btn-danger" })
+        </p>
+    }
 </div>
 

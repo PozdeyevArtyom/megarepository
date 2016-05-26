@@ -1,0 +1,28 @@
+﻿@model FinalTask.Models.ChangeEmailModel
+
+@{
+    ViewBag.Title = "Изменение E-mail";
+}
+
+<h2>Изменение E-mail</h2>
+<div class="container">
+    @using (Html.BeginForm("ChangeEmail", "Account", FormMethod.Post))
+    {
+        @Html.HiddenFor(UserName => Model.UserName)
+        <div class="input-box">
+            <div class="label-div">Текущий E-mail<b>*</b></div>
+            <div class="input-div">@Html.TextBoxFor(x => Model.OldEmail, new { @class = "input-lg" })</div>
+            <div class="valid-div">@Html.ValidationMessageFor(x => Model.OldEmail)</div>
+        </div>
+        <div class="input-box">
+            <div class="label-div">Новый E-mail<b>*</b></div>
+            <div class="input-div">@Html.TextBoxFor(x => Model.NewEmail, new { @class = "input-lg" })</div>
+            <div class="valid-div">@Html.ValidationMessageFor(x => Model.NewEmail)</div>
+        </div>
+        <div class="input-box">
+            <input class="btn-lg btn-primary" type="submit" value="Изменить">
+            @Html.ActionLink("Отмена", "ProfilePage", "Account", new { Name = Model.UserName }, null)
+        </div>
+    }
+</div>
+

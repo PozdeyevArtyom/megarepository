@@ -6,10 +6,9 @@
 <h2>Загрузка файла</h2>
 
 <div class="container">
-    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multi-part/formdata" }))
+    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        @Html.HiddenFor(on => Model.OwnerName)
-        @Html.HiddenFor(sp => Model.SavePath)
+        @Html.HiddenFor(parid => Model.ParentId)
         <input type="file" name="UploadedFile" />
         <div class="valid-div">@Html.ValidationMessageFor(uf => Model.UploadedFile)</div>
         <input class="btn-lg btn-primary" type="submit" value="Загрузить" />

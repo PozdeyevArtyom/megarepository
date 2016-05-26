@@ -1,0 +1,60 @@
+﻿@model List<FinalTask.Models.FileModel>
+@{
+    ViewBag.Title = "Поиск файлов";
+}
+<div class="container">
+    <h4>Расширенный поиск:</h4>
+    <form action="~/Home/Search" method="post">
+        <div class="container">
+            <div style="width: 15%; float: left">Имя:</div>
+            <input class="btn-lg" type="text" name="NamePattern" value="@ViewBag.NamePattern" />
+        </div>
+        <div class="container">
+            <div style="width: 15%; float: left">Владелец:</div>
+            <input class="btn-lg" type="text" name="OwnerNamePattern" value="@ViewBag.OwnerNamePattern"  />
+        </div>
+        <input class="btn-lg btn-warning" type="submit" value="Искать" />
+        @if (ViewBag.Searching == 1)
+        {
+            @Html.ActionLink("Сброс", "Search", "Home")
+        }
+    </form>
+</div>
+<table class="file-table" width="100%">
+    <tr class="file-table">
+        <th width="5%">ИД</th>
+        <th width="40%">Имя</th>
+        <th width="5%">Тип</th>
+        <th width="20%">Владелец</th>
+        <th width="10%">Размер</th>
+        <th width="10%">Скачиваний</th>
+        <th width="10%">Дата загрузки</th>
+    </tr>
+    @foreach (FinalTask.Models.FileModel file in Model)
+    {
+        <tr class="file-table">
+            <td width="5%">@Html.ActionLink("" + file.ID, "Settings", "File", new { id = file.ID }, null)</td>
+            <td width="40%">@Html.ActionLink(file.Name, "Settings", "File", new { id = file.ID }, null)</td>
+            <td width="5%">@file.Extension</td>
+            <td width="20%">@Html.ActionLink(file.OwnerName, "ProfilePage", "Account", new { Name = file.OwnerName }, null)</td>
+            @if (file.Size > 1000000000)
+            {
+                <td width="10%">@String.Format("{0:0.00} Гбайт", (double)file.Size / 1073741824))</td>
+            }
+            else if (file.Size > 1000000)
+            {
+                <td width="10%">@String.Format("{0:0.00} Мбайт", (double)file.Size / 1048576)</td>
+            }
+            else if (file.Size > 1000)
+            {
+                <td width="10%">@String.Format("{0:0.00} Кбайт", (double)file.Size / 1024)</td>
+            }
+            else
+            {
+                <td width="10%">@String.Format("{0} байт", file.Size)</td>
+            }
+            <td width="10%">@file.Downloads</td>
+            <td width="10%">@file.UploadDate.ToShortDateString()</td>
+        </tr>
+    }
+</table>

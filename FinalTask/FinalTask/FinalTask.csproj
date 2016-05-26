@@ -163,18 +163,26 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChangeEmailModel.cs" />
+    <Compile Include="Models\ChangePasswordModel.cs" />
+    <Compile Include="Models\FileModel.cs" />
     <Compile Include="Models\FolderModel.cs" />
     <Compile Include="Models\LoggedUserModel.cs" />
     <Compile Include="Models\NewFolderModel.cs" />
     <Compile Include="Models\RegistredUserModel.cs" />
+    <Compile Include="Models\SearchParams.cs" />
     <Compile Include="Models\UploadedFileModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Roles\MyRoleProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\cross.png" />
     <Content Include="Content\foldericon.jpg" />
+    <Content Include="Content\saveicon.png" />
+    <Content Include="Content\saveicondisabled.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -211,10 +219,18 @@
     <Content Include="Views\Account\Storage.cshtml" />
     <Content Include="Views\File\Upload.cshtml" />
     <Content Include="Views\File\NewFolder.cshtml" />
+    <Content Include="Views\File\FolderSettings.cshtml" />
+    <Content Include="Views\File\Settings.cshtml" />
+    <Content Include="Views\File\Download.cshtml" />
+    <Content Include="Views\File\Remove.cshtml" />
+    <Content Include="Views\File\RemoveFolder.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ChangeEmail.cshtml" />
+    <Content Include="Views\Home\UserList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Roles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

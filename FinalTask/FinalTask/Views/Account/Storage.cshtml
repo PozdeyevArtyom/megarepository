@@ -1,63 +1,157 @@
 ﻿@model FinalTask.Models.FolderModel
 
 @{
-    ViewBag.Title = "Хранилище " + User.Identity.Name;
+    ViewBag.Title = "Хранилище " + Model.CurrentFolder.Owner.Name;
 }
 
-@if (Model.Name.IndexOf('\\') == Model.Name.LastIndexOf('\\'))
+@if (Model.HasAccess || User.IsInRole("Admin"))
 {
-    <h2>@Model.Name</h2>
+    <div class="container marginv">
+        @if (Model.CurrentFolder.Owner.Name.Equals(User.Identity.Name) || User.IsInRole("Admin"))
+        {
+                <div class="right-menu ">
+                    @Html.ActionLink("Найстройки папки", "FolderSettings", "File", new { id = Model.CurrentFolder.Id },
+                          new { @class = "btn-lg btn-info" })
+                </div>
+        }
+
+        @if (Model.RootID == -1)
+        {
+            <h2>@Model.CurrentFolder.Name</h2>
+        }
+        else
+        {
+            string rootfolder = Model.CurrentFolder.FullName.Substring(0, Model.CurrentFolder.FullName.LastIndexOf('\\'));
+            <h2>
+                @Html.ActionLink(rootfolder, "Storage", "Account",
+                     new { id = Model.RootID }, null)
+                @Model.CurrentFolder.FullName.Substring(Model.CurrentFolder.FullName.LastIndexOf('\\'))
+            </h2>
+        }
+    </div>
+
+    <div class="container marginv">
+        @if (Model.CurrentFolder.Owner.Name.Equals(User.Identity.Name))
+        {
+            <div class="div-third">
+                @Html.ActionLink("Создать подпапку", "NewFolder", "File", new { parid = Model.CurrentFolder.Id },
+              new { @class = "big btn-lg btn-warning" })
+            </div>
+            <div class="div-third">
+                @Html.ActionLink("Загрузить файл", "Upload", "File", new { parid = Model.CurrentFolder.Id },
+              new { @class = "big btn-lg btn-success" })
+            </div>
+            <div class="div-third">
+                @if (Model.RootID != -1)
+                {
+                    @Html.ActionLink("Удалить папку", "Delete", "File", new { id = Model.CurrentFolder.Id },
+                        new { @class = "big btn-lg btn-danger" })
+                }
+            </div>
+        }
+    </div>
+
+    <div class="container">
+        @if (Model.SubFolders.Count() + Model.Files.Count() == 0)
+        {
+            <center>Папка пуста</center>
+        }
+        else
+        {
+            <table border="0" width="100%">
+                <tr>
+                    <th width="50%">
+                        Имя
+                    </th>
+                    <th width="15%">
+                        Тип
+                    </th>
+                    <th width="10%">
+                        Размер
+                    </th>
+                    <th width="25%">
+                        Дата загрузки
+                    </th>
+                </tr>
+                @foreach (FinalTask.Models.FileModel folder in Model.SubFolders)
+                {
+                    <tr>
+                        <td width="55%">
+                            <a href="~/Account/Storage?id=@folder.ID"><img src="~/Content/foldericon.jpg" height="26px" width="32px" /></a>                            
+                            @Html.ActionLink(folder.Name, "Storage", "Account", new { id = folder.ID }, null)
+                        </td>
+                        <td width="15%">Папка</td>
+                        @if (folder.Size > 1000000000)
+                        {
+                            <td width="15%">@String.Format("{0:0.00} Гбайт", (double)folder.Size / 1073741824))</td>
+                        }
+                        else if (folder.Size > 1000000)
+                        {
+                            <td width="15%">@String.Format("{0:0.00} Мбайт", (double)folder.Size / 1048576)</td>
+                        }
+                        else if (folder.Size > 1000)
+                        {
+                            <td width="15%">@String.Format("{0:0.00} Кбайт", (double)folder.Size / 1024)</td>
+                        }
+                        else
+                        {
+                            <td width="15%">@String.Format("{0} байт", folder.Size)</td>
+                        }
+                        <td width="15%">@folder.UploadDate.ToShortDateString()</td>
+                    </tr>
+                }
+                @foreach (FinalTask.Models.FileModel file in Model.Files)
+                {
+                    <tr>
+                        <td width="55%">
+                            @if (file.OwnerName.Equals(User.Identity.Name) || User.IsInRole("Admin"))
+                            {
+                                @Html.ActionLink(file.Name, "Settings", "File", new { id = file.ID }, null)
+                            }
+                            else
+                            {
+                                @file.Name
+                            }
+                            @if (file.HasAccess || User.IsInRole("Admin"))
+                            {
+                                    <a href="~/File/Download?id=@file.ID">
+                                        <img src="~/Content/saveicon.png" width="17px" height="17px" title="Скачать @file.Name" />
+                                    </a>
+                            }
+                            else
+                            {
+                                <img src="~/Content/saveicondisabled.png" width="17px" height="17px" title="Владелец ограничил доступ к этому файлу" />
+                            }
+                        </td>
+                        <td width="15%">@file.Extension</td>
+                        @if (file.Size > 1000000000)
+                        {
+                            <td width="15%">@String.Format("{0:0.00} Гбайт", (double)file.Size / 1073741824))</td>
+                        }
+                        else if (file.Size > 1000000)
+                        {
+                            <td width="15%">@String.Format("{0:0.00} Мбайт", (double)file.Size / 1048576)</td>
+                        }
+                        else if (file.Size > 1000)
+                        {
+                            <td width="15%">@String.Format("{0:0.00} Кбайт", (double)file.Size / 1024)</td>
+                        }
+                        else
+                        {
+                            <td width="15%">@String.Format("{0} байт", file.Size)</td>
+                        }
+                        <td width="15%">@file.UploadDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
 }
 else
 {
-    string rootfolder = Model.Name.Substring(0, Model.Name.LastIndexOf('\\'));
-    <h2>
-        @Html.ActionLink(rootfolder, "Storage", "Account",
-            new { Name = rootfolder, OwnerName = Model.OwnerName }, null)
-        @Model.Name.Substring(Model.Name.LastIndexOf('\\'))
-    </h2>
-    
+    <center>
+        Извините, у вас нет прав для просмотра.<br/>
+        @Html.ActionLink("Главная", "Index", "Home")<br/>
+        @Html.ActionLink("Ваш профиль", "ProfilePage", "Account", new { Name = User.Identity.Name }, null)
+    </center>
 }
-
-<div class="container stotage-buttons-div">
-    @if (Model.OwnerName.Equals(User.Identity.Name))
-    {
-        <div class="div-third">
-            @Html.ActionLink("Создать подпапку", "NewFolder", "File", new { ownerName = Model.OwnerName, savePath = Model.Name },
-                new { @class = "big btn-lg btn-warning" })
-        </div>
-        <div class="div-third">
-            @Html.ActionLink("Загрузить файл", "Upload", "File", new { ownerName = Model.OwnerName, savePath = Model.Name },
-                new { @class = "big btn-lg btn-success" })
-        </div>
-        <div class="div-third">
-            @Html.ActionLink("Удалить папку", "DeleteFolder", "Account", new { @class = "big btn-lg btn-danger" })
-        </div>
-    }
-</div>
-<div class="container">
-    <table border="0" width="100%">
-        @foreach (Entities.FileEntity folder in Model.SubFolders)
-        {
-            <tr>
-                <td width="50%">
-                    <img src="~/Content/foldericon.jpg" height="26px" width="32px"/>
-                    @Html.ActionLink(folder.Name, "Storage", "Account",
-                               new { Name = Model.Name + '\\' + folder.Name, OwnerName = Model.OwnerName }, null) 
-                </td>
-                <td width="15%">Папка</td>
-                <td width="10%"></td>
-                <td width="25%">@folder.UploadDate.ToShortDateString()</td>
-            </tr>
-        }
-        @foreach (Entities.FileEntity file in Model.Files)
-        {
-            <tr>
-                <td width="50%">@file.Name</td>
-                <td width="15%">@file.Extension</td>
-                <td width="10%">@file.Size</td>
-                <td width="25%">@file.UploadDate.ToShortDateString()</td>
-            </tr>
-        }
-    </table>
-</div>

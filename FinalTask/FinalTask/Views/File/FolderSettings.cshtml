@@ -1,0 +1,80 @@
+﻿@model FinalTask.Models.FileModel
+
+@{
+    ViewBag.Title = "Папка " + Model.Name;
+}
+
+<h2>Папка - @Html.ActionLink(Model.Name, "Storage", "Account", new { id = Model.ID }, null)</h2>
+<div class="container">
+    <p>Полное имя - @Model.FullName</p>
+    <p>Дата создания - @Model.UploadDate.ToShortDateString()</p>
+    @if(Model.Access == Entities.AccessType.Public)
+    {
+        <p>Тип доступа - публичный (любой пользователь видит содержимое папки).</p>
+    }
+    else if(Model.Access == Entities.AccessType.Private)
+    {
+        <p>Тип доступа - личный (содержимое этой папки видно только вам).</p>
+    }
+    else
+    {
+        <p>Тип достпуа - ограниченный (доступно для просмотра ограниченному количеству пользователей).</p>
+        <p>Пользователи имеющие доступ:</p>
+        <div class="container">
+            @foreach (Entities.User user in Model.AccessedUsers)
+            {
+                if (user.Name.Equals(Model.OwnerName))
+                {
+                    <text>Вы</text>
+                }
+                else
+                {
+                    @Html.ActionLink(user.Name, "ProfilePage", "Account", new { Name = user.Name }, null)
+                    <a href="~/File/RemoveAccess?FileID=@Model.ID&UserID=@user.ID">
+                        <img src="~/Content/cross.png" width="15px" height="15px" title="Убрать доступ пользователю @user.Name" />
+                    </a>
+                }
+                <br/>
+            }
+        </div>
+        <hr/>
+        <div class="container">
+            <p>Дать доступ пользователям (разделять запятой)</p>
+            <form action="/File/GrantFolderAccess" method="post">
+                @Html.HiddenFor(id => Model.ID)
+                <input type="text" width="100%" name="users" />
+                <input type="submit" value="Добавить" />
+            </form>
+        </div>
+    }
+
+    <hr/>
+    <p>Изменение типа доступа:</p>   
+    <form action="/File/ChangeAccess" method="post">
+        @Html.HiddenFor(id => Model.ID)
+        <select name="acc">
+            }@if (Model.Access == Entities.AccessType.Public)
+            {
+                <option>Личный</option>
+                <option>Ограниченный</option>
+            }
+            else if (Model.Access == Entities.AccessType.Private)
+            {
+                <option>Ограниченный</option>
+                <option>Публичный</option>
+            }
+            else
+            {
+                <option>Личный</option>
+                <option>Публичный</option>
+            }
+        </select>
+        <input class="btn-lg btn-info" type="submit" value="Изменить доступ" />
+    </form>
+    <hr/>
+    @if (!Model.FullName.Equals(Model.Name))
+    {
+        @Html.ActionLink("Удалить папку", "Delete", "File", new { id = Model.ID }, new { @class = "btn-lg btn-danger" })
+    }
+</div>
+

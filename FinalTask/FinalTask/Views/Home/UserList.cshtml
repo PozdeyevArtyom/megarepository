@@ -1,0 +1,35 @@
+﻿@model List<FinalTask.Models.UserModel>
+@{
+    ViewBag.Title = "Поиск файлов";
+}
+<div class="container">
+    <h4>Расширенный поиск:</h4>
+    <form action="~/Home/UserList" method="post">
+        <div class="container">
+            <div style="width: 15%; float: left">Имя:</div>
+            <input class="btn-lg" type="text" name="pattern" value="@ViewBag.NamePattern" />
+        </div>
+        <input class="btn-lg btn-warning" type="submit" value="Искать" />
+        @if (ViewBag.Searching == 1)
+        {
+            @Html.ActionLink("Сброс", "UserList", "Home")
+        }
+    </form>
+</div>
+<table class="file-table" width="100%">
+    <tr class="file-table">
+        <th width="25%">Имя</th>
+        <th width="25%">Дата регистрации</th>
+        <th width="25%">E-mail</th>
+        <th width="25%">Хранилище</th>
+    </tr>
+    @foreach (FinalTask.Models.UserModel user in Model)
+    {
+        <tr class="file-table">
+            <td width="25%">@Html.ActionLink(user.Name, "ProfilePage", "Account", new { Name = user.Name }, null)</td>
+            <td width="25%">@user.RegDate.ToShortDateString()</td>
+            <td width="25%">@user.Email</td>
+            <td width="25%">@Html.ActionLink("Ссылка", "Storage", "Account", new { id = user.RootId }, null)</td>
+        </tr>
+    }
+</table>

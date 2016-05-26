@@ -1,0 +1,103 @@
+﻿@model FinalTask.Models.FileModel
+
+@{
+    ViewBag.Title = "Файл " + Model.Name;
+}
+
+<h2>Файл - @Model.Name</h2>
+<div class="container">
+    <p>Полное имя - @Model.FullName</p>
+    <p>Тип - @Model.Extension</p>
+    @if (Model.Size > 1000000000)
+    {
+        <p>@String.Format("Размер - {0:0.00} Гбайт", (double)Model.Size / 1073741824))</p>
+    }
+    else if (Model.Size > 1000000)
+    {
+        <p>@String.Format("Размер - {0:0.00} Мбайт", (double)Model.Size / 1048576)</p>
+    }
+    else if (Model.Size > 1000)
+    {
+        <p>@String.Format("Размер - {0:0.00} Кбайт", (double)Model.Size / 1024)</p>
+    }
+    else
+    {
+        <p>@String.Format("Размер - {0} байт", Model.Size)</p>
+    }
+    <p>Скачиваний - @Model.Downloads</p>
+    <p>Дата загрузки - @Model.UploadDate.ToShortDateString()</p>
+    @if (Model.Access == Entities.AccessType.Public)
+    {
+        <p>Тип доступа - публичный (любой пользователь может скачать файл).</p>
+    }
+    else if (Model.Access == Entities.AccessType.Private)
+    {
+        <p>Тип доступа - личный (файл доступен для скачивания только вам).</p>
+    }
+    else
+    {
+        <p>Тип достпуа - ограниченный (доступно для скачивания ограниченному количеству пользователей).</p>
+        <p>Пользователи имеющие доступ:</p>
+        <div class="container">
+            @foreach (Entities.User user in Model.AccessedUsers)
+            {
+                if (user.Name.Equals(Model.OwnerName))
+                {
+                    if (User.Identity.Name.Equals(Model.OwnerName))
+                    {                       
+                         <text>Вы</text>
+                    }
+                    else
+                    {
+                        <text>@Model.OwnerName</text>
+                    }
+                }
+                else
+                {
+                    @Html.ActionLink(user.Name, "ProfilePage", "Account", new { Name = user.Name }, null)
+                    <a href="~/File/RemoveAccess?FileID=@Model.ID&UserID=@user.ID">
+                        <img src="~/Content/cross.png" width="15px" height="15px" title="Убрать доступ пользователю @user.Name" />
+                    </a>
+                }
+                <br />
+            }
+        </div>
+        <hr />
+        <div class="container">
+            <p>Дать доступ пользователям (разделять запятой)</p>
+            <form action="/File/GrantFileAccess" method="post">
+                @Html.HiddenFor(id => Model.ID)
+                <input type="text" width="100%" name="users" />
+                <input type="submit" value="Добавить" />
+            </form>
+        </div>
+    }
+
+    <hr />
+    <p>Изменение типа доступа:</p>
+    <form action="/File/ChangeFileAccess" method="post">
+        @Html.HiddenFor(id => Model.ID)
+        <select name="acc">
+            }@if (Model.Access == Entities.AccessType.Public)
+            {
+                <option>Личный</option>
+                <option>Ограниченный</option>
+            }
+            else if (Model.Access == Entities.AccessType.Private)
+            {
+                <option>Ограниченный</option>
+                <option>Публичный</option>
+            }
+            else
+            {
+                <option>Личный</option>
+                <option>Публичный</option>
+            }
+        </select>
+        <input class="btn-lg btn-info" type="submit" value="Изменить доступ" />
+    </form>
+    <hr />
+    <p>@Html.ActionLink("Скачать файл", "Download", "File", new { id = Model.ID }, new { @class = "btn-lg btn-primary" })</p>
+    @Html.ActionLink("Удалить файл", "Delete", "File", new { id = Model.ID }, new { @class = "btn-lg btn-danger"})
+</div>
+
