@@ -11,19 +11,34 @@ namespace FinalTask.Controllers
 {
     public class AccountController : Controller
     {
-        // GET: Account
+        /// <summary>
+        /// Действие ProfilePage возвращает страницу пользователя user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        [Authorize]
         public ActionResult ProfilePage(Models.UserModel user)
         {
             User u = Logic.GetUserByName(user.Name);
             return View(new Models.UserModel(u, Logic.GetFileID(u.Name)));
         }
 
+        /// <summary>
+        /// Действие LogOut выполняет выход пользователя из системы
+        /// </summary>
+        /// <returns></returns>
         public ActionResult LogOut()
         {
             FormsAuthentication.SignOut();
             return Redirect("~/");
         }
 
+        /// <summary>
+        /// Действие ContainUser проверяет есть ли пользователь с именем username в коллекции userlist
+        /// </summary>
+        /// <param name="userlist"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [ChildActionOnly]
         public bool ContainUser(IEnumerable<User> userlist, string username)
         {
@@ -33,13 +48,23 @@ namespace FinalTask.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Метод Storage возвращает страницу каталога с идентификатором id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Storage(int id)
         {
+            //получаем информацию о текущем каталоге и о его родителях
             Models.FolderModel folder = new Models.FolderModel()
             {
                 CurrentFolder = Logic.GetFileById(id),
                 RootID = Logic.GetParentId(id),
             };
+            if (folder.CurrentFolder.Extension != "folder")
+                return Redirect("~/Account/Storage?id="+folder.RootID);
+
+            //формируем списки подкатологов и содержащихся файлов
             List<Models.FileModel> subfolders = new List<Models.FileModel>();
             List<Models.FileModel> files = new List<Models.FileModel>();
             foreach(FileEntity f in Logic.GetSubfolders(id))
@@ -48,6 +73,7 @@ namespace FinalTask.Controllers
             foreach (FileEntity f in Logic.GetFiles(id))
                 files.Add(new Models.FileModel(f));
 
+            //выставляем доступы к файлам
             for (int i = 0; i < files.Count; i++)
             {
                 files[i].AccessedUsers = new List<User>(Logic.GetAllowedUsers(files[i].ID));
@@ -62,6 +88,7 @@ namespace FinalTask.Controllers
             folder.SubFolders = subfolders;
             folder.Files = files;
 
+            //проверяем наличие доступа к текущему каталогу
             folder.HasAccess = folder.CurrentFolder.Access == AccessType.Public ||
                 folder.CurrentFolder.Access == AccessType.Private && 
                 folder.CurrentFolder.Owner.Name.Equals(User.Identity.Name) ||
@@ -70,6 +97,12 @@ namespace FinalTask.Controllers
             return View(folder);
         }
 
+        /// <summary>
+        /// Действие ChangePassword возвращает страницу смены пароля пользователя с именем name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Authorize]
         public ActionResult ChangePassword(string name)
         {
             if(User.Identity.Name.Equals(name) || User.IsInRole("Admin"))
@@ -78,6 +111,7 @@ namespace FinalTask.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult ChangePassword(Models.ChangePasswordModel ChangedPass)
         {
             if (ModelState.IsValid)
@@ -93,6 +127,12 @@ namespace FinalTask.Controllers
             return View(ChangedPass);         
         }
 
+        /// <summary>
+        /// Действие ChangeEmail возвращает страницу смены электронного адреса пользователя с именем name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Authorize]
         public ActionResult ChangeEmail(string name)
         {
             if (User.Identity.Name.Equals(name) || User.IsInRole("Admin"))
@@ -101,6 +141,7 @@ namespace FinalTask.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult ChangeEmail(Models.ChangeEmailModel ChangedEmail)
         {
             if (ModelState.IsValid)
@@ -116,6 +157,12 @@ namespace FinalTask.Controllers
             return View(ChangedEmail);
         }
 
+        /// <summary>
+        /// Действие RemoveUser удаляет пользователя с именем name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Authorize]
         public ActionResult RemoveUser(string name)
         {
             if (User.IsInRole("Admin"))
@@ -124,7 +171,6 @@ namespace FinalTask.Controllers
                 return Redirect("~/Home/UserList");
             }
             return Redirect("~/");
-
         }
     }
 }

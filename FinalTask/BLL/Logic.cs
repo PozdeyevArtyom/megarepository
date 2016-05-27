@@ -47,42 +47,12 @@ namespace BLL
         {
             return Data.GetUserByName(name);
         }
-
-        public static IEnumerable<FileEntity> GetSubfolders(string foldername, string ownerName)
-        {
-            IEnumerable<DirectoryInfo> foldersdi = Storage.GetSubfolders(foldername);
-            List<FileEntity> folders = new List<FileEntity>();
-            foreach (DirectoryInfo d in foldersdi)
-                folders.Add(new FileEntity {
-                    Name = d.Name,
-                    FullName = foldername + '\\' + d.Name,
-                    Extension = "folder",
-                    Id = Data.GetFileId(foldername + '\\' + d.Name),
-                    Owner = new User { Name = ownerName },
-                    UploadDate = d.CreationTime
-                });
-            return folders;
-        }
-
+        
         public static IEnumerable<FileEntity> GetSubfolders(int id)
         {
             return Data.GetChildren(id, true);
         }
-
-        public static IEnumerable<FileEntity> GetFiles(string foldername, string ownerName)
-        {
-            IEnumerable<FileInfo> filenames = Storage.GetFiles(foldername);
-            List<FileEntity> files = new List<FileEntity>();
-            foreach (FileInfo f in filenames)
-            {
-                FileEntity fe = new FileEntity(f);
-                fe.Owner = new User { Name = ownerName };
-                fe.Id = Data.GetFileId(fe.FullName);
-                files.Add(fe);
-            }
-            return files;
-        }
-
+        
         public static IEnumerable<FileEntity> GetFiles(int id)
         {
             return Data.GetChildren(id, false);

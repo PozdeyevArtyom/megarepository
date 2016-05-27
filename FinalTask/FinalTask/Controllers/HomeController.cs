@@ -51,6 +51,7 @@ namespace FinalTask.Controllers
         {
             if(ModelState.IsValid)
             {
+                //проверяем валидность комбинации логина и пароля
                 if (Logic.Auth(loggedUserModel.Name, loggedUserModel.Password))
                 {
                     FormsAuthentication.SetAuthCookie(loggedUserModel.Name, false);
@@ -62,6 +63,11 @@ namespace FinalTask.Controllers
             return View(loggedUserModel);
         }       
         
+        /// <summary>
+        /// Действие Search возвращает страницу с поиском файлов
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
         public ActionResult Search()
         {
             if (!User.IsInRole("Admin"))
@@ -74,25 +80,38 @@ namespace FinalTask.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult Search(Models.SearchParams Params)
         {
+            //инициализируем строки если они пустые
             if (Params.NamePattern == null)
                 Params.NamePattern = "";
             if (Params.OwnerNamePattern == null)
                 Params.OwnerNamePattern = "";
+
+            //проверяем роль
             if (!User.IsInRole("Admin"))
                 return Redirect("~/");
+            
+            //осуществляем поиск
             List<Models.FileModel> files = new List<Models.FileModel>();
             foreach (FileEntity f in Logic.GetAllFiles())
                 if (f.Extension != "folder" && f.Name.Contains(Params.NamePattern) 
                     && f.Owner.Name.Contains(Params.OwnerNamePattern))
                     files.Add(new Models.FileModel(f));
+
+            //сохраняем параметры поиска
             ViewBag.NamePattern = Params.NamePattern;
             ViewBag.OwnerNamePattern = Params.OwnerNamePattern;
             ViewBag.Searching = 1;
             return View(files);
         }
 
+        /// <summary>
+        /// Действие UserList возвращает стрницу списка пользователей
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
         public ActionResult UserList()
         {
             if (!User.IsInRole("Admin"))
@@ -104,14 +123,24 @@ namespace FinalTask.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult UserList(string pattern)
         {
+            //инициализируем строку если она пуста
+            if (pattern == null) 
+                pattern = "";
+
+            //проверяем роль
             if (!User.IsInRole("Admin"))
                 return Redirect("~/");
+
+            //осуществляем поиск
             List<Models.UserModel> users = new List<Models.UserModel>();
             foreach (User u in Logic.GetAllUsers())
                 if (u.Name.Contains(pattern))
                     users.Add(new Models.UserModel(u, Logic.GetFileID(u.Name)));
+
+            //сохраняем параметры поиска
             ViewBag.NamePattern = pattern;
             ViewBag.Searching = 1;
             return View(users);

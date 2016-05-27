@@ -10,33 +10,36 @@ namespace FinalTaskDAL
 {
     public class FDAL
     {
-        public DirectoryInfo Storage;
+        public DirectoryInfo Storage { get; set; }
 
         public FDAL(string path)
         {
             Storage = new DirectoryInfo(path);
         }
 
-        public IEnumerable<DirectoryInfo> GetSubfolders(string name)
-        {
-            return new DirectoryInfo(Storage.FullName + name).EnumerateDirectories();
-        }
-
-        public IEnumerable<FileInfo> GetFiles(string name)
-        {
-            return new DirectoryInfo(Storage.FullName + name).EnumerateFiles();
-        }
-
+        /// <summary>
+        /// Метод CreateFolder создаёт подкаталог в каталоге root с именем foldername
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="foldername"></param>
         public void CreateFolder(FileEntity root, string foldername)
         {
             Storage.CreateSubdirectory(root.FullName + '\\' + foldername);
         }
 
+        /// <summary>
+        /// Метод GetPath возвращает путь к хранищилищу файлов
+        /// </summary>
+        /// <returns></returns>
         public string GetPath()
         {
             return Storage.FullName;
         }
 
+        /// <summary>
+        /// Метода RemoveFile удаляет file из файловой системы
+        /// </summary>
+        /// <param name="file"></param>
         public void RemoveFile(FileEntity file)
         {
             if (file.Extension == "folder")

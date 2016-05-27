@@ -18,6 +18,12 @@ namespace FinalTaskDAL
             ConnectionString = connectionstring;
         }
 
+        /// <summary>
+        /// Метод AddFile добавляет информацию о файле в базу данных
+        /// </summary>
+        /// <param name="parid"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public bool AddFile(int parid, FileEntity file)
         {
             bool r;
@@ -60,6 +66,11 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод AddUser создаёт нового пользователя в базе данных
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public bool AddUser(User user)
         {
             if (CheckName(user.Name))
@@ -108,6 +119,11 @@ namespace FinalTaskDAL
             return result;
         }
 
+        /// <summary>
+        /// Метод GetAccessedFilesForUser возвращает все файлы, доступ к которым имеется у пользователя user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public IEnumerable<FileEntity> GetAccessedFilesForUser(User user)
         {
             List<FileEntity> files = new List<FileEntity>();
@@ -129,6 +145,10 @@ namespace FinalTaskDAL
             return files;
         }
 
+        /// <summary>
+        /// Метод GetAllFiles возвращает все файлы, имеющиеся в базе данных
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<FileEntity> GetAllFiles()
         {
             List<FileEntity> files = new List<FileEntity>();
@@ -181,6 +201,11 @@ namespace FinalTaskDAL
             return files;
         }
 
+        /// <summary>
+        /// Метод GetAllFilesOwnedByUser возвращает все файлы, которые загрузил пользователь user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public IEnumerable<FileEntity> GetAllFilesOwnedByUser(User user)
         {
             List<FileEntity> files = new List<FileEntity>();
@@ -231,6 +256,11 @@ namespace FinalTaskDAL
             return files;
         }
 
+        /// <summary>
+        /// Метод GetAllowedUsers возвращает всех пользователей, которые имеют доступ к файлу file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public IEnumerable<User> GetAllowedUsers(FileEntity file)
         {
             List<User> users = new List<User>();
@@ -252,6 +282,10 @@ namespace FinalTaskDAL
             return users;
         }
 
+        /// <summary>
+        /// Метод GetAllUsers возвращает всех зарегистрированных пользователей
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<User> GetAllUsers()
         {
             List<User> users = new List<User>();
@@ -288,6 +322,11 @@ namespace FinalTaskDAL
             return users;
         }
 
+        /// <summary>
+        /// Метод GetFileById возвращает файл, соответствующий идентификатору id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public FileEntity GetFileById(int id)
         {
             FileEntity file = null;
@@ -339,7 +378,12 @@ namespace FinalTaskDAL
 
             return file;
         }
-        
+
+        /// <summary>
+        /// Метод GetUserById возвращает пользователя, соответствующего идентификатору id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public User GetUserById(int id)
         {
             User user = null;
@@ -376,6 +420,11 @@ namespace FinalTaskDAL
             return user;
         }
 
+        /// <summary>
+        /// Метод GetUserByName возвращает пользователя с именем name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public User GetUserByName(string name)
         {
             User user = null;
@@ -411,7 +460,12 @@ namespace FinalTaskDAL
             }
             return user;
         }
-        
+
+        /// <summary>
+        /// Метод RemoveUser удаляет пользователя с именем name
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public bool RemoveUser(string username)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -433,6 +487,11 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод CheckName проверяет существует ли пользователя с именем name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public bool CheckName(string name)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -447,6 +506,11 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод CheckEmail проверяет существует ли пользователь с электронной почтой email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool CheckEmail(string email)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -461,6 +525,12 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод Auth проверяет комбинацию логина и пароля
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
         public bool Auth(string name, string pass)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -478,6 +548,11 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод GetFileByFullName возвращает файл, полное имя которого соотвествует filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public FileEntity GetFileByFullName(string filename)
         {
             FileEntity file = null;
@@ -522,7 +597,13 @@ namespace FinalTaskDAL
             }
             return file;
         }
-        
+
+        /// <summary>
+        /// Метод CreateSubFolder добавляет в базу данных информацию о подкаталоге каталога root с именем name
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public bool CreateSubFolder(FileEntity root, string name)
         {
             if (GetFileId(root.FullName + '\\' + name) != -1)
@@ -565,6 +646,11 @@ namespace FinalTaskDAL
             return r;
         }
 
+        /// <summary>
+        /// Метод GetFileId возвращает идентификатор файла, полное имя которого соответствует fullname
+        /// </summary>
+        /// <param name="fullname"></param>
+        /// <returns></returns>
         public int GetFileId(string fullname)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -583,6 +669,13 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Если параметр f - истина, то метод GetChildren возвращает все подкаталоги каталога с идентификатором id
+        /// В противном случае вернём все содержащиеся в нём файлы
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="f"></param>
+        /// <returns></returns>
         public IEnumerable<FileEntity> GetChildren(int id, bool f)
         {
             List<int> ids = new List<int>();
@@ -682,6 +775,11 @@ namespace FinalTaskDAL
             return files;
         }
 
+        /// <summary>
+        /// Метод GetParentId возвращает индентификатор родительского каталога для файла с идентиыикатором id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public int GetParentId(int id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -700,6 +798,13 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод HasAccess проверяет имеет ли пользователь с идентификатором userid доступ к файлу
+        /// с идентификатором fileid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="fileid"></param>
+        /// <returns></returns>
         public bool HasAccess(int userid, int fileid)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -717,6 +822,12 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод ChangeAccess изменяет тип доступа файла file на accesstype
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="accesstype"></param>
+        /// <returns></returns>
         public bool ChangeAccess(FileEntity file, AccessType accesstype)
         {
             bool r;
@@ -752,6 +863,13 @@ namespace FinalTaskDAL
             return r;
         }
 
+        /// <summary>
+        /// Метод RemoveAccess отменяет доступ к файлу с идентификатором fileid для пользователя
+        /// с идентификатором userid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="fileid"></param>
+        /// <returns></returns>
         public bool RemoveAccess(int userid, int fileid)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -768,6 +886,13 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        ///  Метод GrantAccess даёт доступ к файлу с идентификатором fileid для пользователя
+        /// с идентификатором userid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="fileid"></param>
+        /// <returns></returns>
         public bool GrantAccess(int userid, int fileid)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -789,6 +914,11 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод GetUserType возвращает тип пользователя
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public int GetUserType(string username)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -806,6 +936,13 @@ namespace FinalTaskDAL
             }
         }
 
+
+        /// <summary>
+        /// Метод ChangePasswordForUser изменяет пароль пользователя с именем username на newpass
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="newpass"></param>
+        /// <returns></returns>
         public bool ChangePasswordForUser(string username, string newpass)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -821,6 +958,12 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод ChangeEmailForUser изменяет электронный адрес пользователя с именем username на newemail
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="newemail"></param>
+        /// <returns></returns>
         public bool ChangeEmailForUser(string username, string newemail)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -836,6 +979,13 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод CheckEmailForUser проверяет соответсвует ли электронный адрес email 
+        /// электронному аресу пользователя с именем username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool CheckEmailForUser(string username, string email)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -853,6 +1003,12 @@ namespace FinalTaskDAL
             }
         }
 
+
+        /// <summary>
+        /// Метод RemoveFile удаляет файл с идентификатором id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool RemoveFile(int id)
         {
             bool r;
@@ -879,6 +1035,11 @@ namespace FinalTaskDAL
             return r;
         }
 
+        /// <summary>
+        /// Метод Download увеличивает количество скачиваний файла с идентификатором fileid на 1
+        /// </summary>
+        /// <param name="fileid"></param>
+        /// <returns></returns>
         public bool Download(int fileid)
         {
             if (GetFileById(fileid).Extension == "folder")
@@ -896,6 +1057,13 @@ namespace FinalTaskDAL
             }
         }
 
+        /// <summary>
+        /// Метод ChangeDirSize изменяет размер каталога с идентификатором dirid, а также всех
+        /// родительских на amount
+        /// </summary>
+        /// <param name="dirid"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
         public bool ChangeDirSize(int dirid, int amount)
         {
             if (GetFileById(dirid).Extension != "folder")
