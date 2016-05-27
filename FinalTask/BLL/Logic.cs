@@ -18,7 +18,7 @@ namespace BLL
         {
             bool b = Data.AddUser(user);
             if (b)
-                Storage.CreateFolder(new FileEntity() { Name = user.Name }, "root");
+                Storage.CreateFolder(new FileEntity() { FullName = user.Name }, "root");
             return b;
         }
 

@@ -708,6 +708,7 @@ namespace FinalTaskDAL
                             {
                                 FileEntity folder = new FileEntity();
                                 folder.Id = i;
+                                folder.Extension = "folder";
                                 folder.Owner = new User() { ID = reader.GetInt32(0) };
                                 folder.Name = reader.GetString(1).Trim();
                                 folder.UploadDate = reader.GetDateTime(2);

@@ -8,12 +8,11 @@ SELECT * FROM MegaFileStorage.Access
 
 UPDATE MegaFileStorage.Files SET Size = 0 WHERE Size IS NULL
 
-/*DELETE FROM MegaFileStorage.Users WHERE UserID = 3010 
+/*DELETE FROM MegaFileStorage.Users WHERE UserID = 7008
 
-DELETE FROM MegaFileStorage.Files
+DELETE FROM MegaFileStorage.Files WHERE FileID = 8010
 
-DELETE FROM MegaFileStorage.Folders
-
+DELETE FROM MegaFileStorage.Folders WHERE ParID = 8011
 DELETE FROM MegaFileStorage.Access*/
 
 DELETE FROM MegaFileStorage.Users WHERE UserName = 'MegaUser'
