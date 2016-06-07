@@ -1,19 +1,20 @@
 ﻿SELECT * FROM MegaFileStorage.Users
 
-SELECT * FROM MegaFileStorage.Files
+SELECT * FROM MegaFileStorage.Files WHERE OwnerID = 8005
+SELECT * FROM MegaFileStorage.Files WHERE FileID = 2031
 
-SELECT * FROM MegaFileStorage.Folders
+SELECT * FROM MegaFileStorage.Folders WHERE ChID = 2030 OR ParID = 2030
 
-SELECT * FROM MegaFileStorage.Access
-
+SELECT * FROM MegaFileStorage.Access WHERE FileID = 2027
+/*
 UPDATE MegaFileStorage.Files SET Size = 0 WHERE Size IS NULL
 
-/*DELETE FROM MegaFileStorage.Users WHERE UserID = 7008
+DELETE FROM MegaFileStorage.Users WHERE UserID = 7008
 
 DELETE FROM MegaFileStorage.Files WHERE FileID = 8010
 
 DELETE FROM MegaFileStorage.Folders WHERE ParID = 8011
-DELETE FROM MegaFileStorage.Access*/
+DELETE FROM MegaFileStorage.Access
 
 DELETE FROM MegaFileStorage.Users WHERE UserName = 'MegaUser'
 
@@ -37,3 +38,4 @@ VALUES(2006, 'User1', 'folder', CONVERT(DATETIME, '20160512', 101), 'Storage\Use
 
 UPDATE MegaFileStorage.Files SET ContentType ='application/vnd.openxmlformats-officedocument.presentationml.presentation' WHERE FileID = 4003
 
+*/

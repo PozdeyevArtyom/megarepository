@@ -74,9 +74,7 @@
     <RefactorLog Include="FinalTaskDatabase.refactorlog" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MegaFileStorage\Scripts\Users.sql" />
     <None Include="MegaFileStorage\Scripts\Test.sql" />
-    <None Include="MegaFileStorage\Scripts\Files.sql" />
-    <None Include="MegaFileStorage\Scripts\Folders.sql" />
+    <None Include="MegaFileStorage\Scripts\Data.sql" />
   </ItemGroup>
 </Project>
