@@ -1,11 +1,11 @@
 ﻿SELECT * FROM MegaFileStorage.Users
 
-SELECT * FROM MegaFileStorage.Files WHERE OwnerID = 8005
-SELECT * FROM MegaFileStorage.Files WHERE FileID = 2031
+SELECT * FROM MegaFileStorage.Files --WHERE OwnerID = 8005
+SELECT * FROM MegaFileStorage.Files --WHERE FileID = 2031
 
-SELECT * FROM MegaFileStorage.Folders WHERE ChID = 2030 OR ParID = 2030
+SELECT * FROM MegaFileStorage.Folders --WHERE ChID = 2030 OR ParID = 2030
 
-SELECT * FROM MegaFileStorage.Access WHERE FileID = 2027
+SELECT * FROM MegaFileStorage.Access --WHERE FileID = 2027
 /*
 UPDATE MegaFileStorage.Files SET Size = 0 WHERE Size IS NULL
 
@@ -16,11 +16,10 @@ DELETE FROM MegaFileStorage.Files WHERE FileID = 8010
 DELETE FROM MegaFileStorage.Folders WHERE ParID = 8011
 DELETE FROM MegaFileStorage.Access
 
-DELETE FROM MegaFileStorage.Users WHERE UserName = 'MegaUser'
-
-DELETE FROM MegaFileStorage.Files WHERE FileID = 3009
-DELETE FROM MegaFileStorage.Files WHERE OwnerID = 3015
-DELETE FROM MegaFileStorage.Access WHERE AccessID = 6
+DELETE FROM MegaFileStorage.Users
+DELETE FROM MegaFileStorage.Files
+DELETE FROM MegaFileStorage.Folders
+DELETE FROM MegaFileStorage.Access
 
 DELETE FROM MegaFileStorage.Folders WHERE ChID = 3009
 

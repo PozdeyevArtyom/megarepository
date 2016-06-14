@@ -1,227 +1,83 @@
-﻿DECLARE @OwnerID INT
-DECLARE @ParID INT
-DECLARE @ChID INT
+﻿SET IDENTITY_INSERT [MegaFileStorage].[Users] ON
+INSERT INTO [MegaFileStorage].[Users] ([UserID], [UserName], [Pass], [RegistrationDate], [UserType], [Email]) VALUES (3008, N'Admin                                   ', N'p@ssword                                ', N'2016-05-24 00:00:00', 0, N'admin@mail.ru                                               ')
+INSERT INTO [MegaFileStorage].[Users] ([UserID], [UserName], [Pass], [RegistrationDate], [UserType], [Email]) VALUES (4005, N'MegaUser                                ', N'qwe125                                  ', N'2016-05-13 17:59:16', 1, N'superuser@gmail.com                                         ')
+INSERT INTO [MegaFileStorage].[Users] ([UserID], [UserName], [Pass], [RegistrationDate], [UserType], [Email]) VALUES (6005, N'SuperUser                               ', N'qwe123                                  ', N'2016-05-26 17:16:29', 1, N'superpuperuser@yandex.ru                                    ')
+INSERT INTO [MegaFileStorage].[Users] ([UserID], [UserName], [Pass], [RegistrationDate], [UserType], [Email]) VALUES (8005, N'User1                                   ', N'qwe123                                  ', N'2016-05-24 00:00:00', 1, N'user1@mail.ru                                               ')
+SET IDENTITY_INSERT [MegaFileStorage].[Users] OFF
 
-/*---------------------------------Admin---------------------------------*/
-/*регистрация*/
-INSERT INTO [MegaFileStorage].Users ([UserName], [Pass], [RegistrationDate], [UserType], [Email]) 
-VALUES ('Admin', 'p@ssword', CONVERT(DATETIME, '20160524', 101), 0, 'admin@mail.ru')
-SELECT  @OwnerID=UserID FROM MegaFileStorage.Users WHERE UserName='Admin'
+SET IDENTITY_INSERT [MegaFileStorage].[Files] ON
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (2027, 3008, N'Admin                                                       ', N'folder    ', 0, N'2016-05-24 00:00:00', NULL, N'Admin                                                                                                                                                                                                   ', 0, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (2030, 3008, N'root                                                        ', N'folder    ', 0, N'2016-05-24 00:00:00', NULL, N'Admin\root                                                                                                                                                                                              ', 0, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (3002, 4005, N'MegaUser                                                    ', N'folder    ', 150827, N'2016-05-13 18:00:24', NULL, N'MegaUser                                                                                                                                                                                                ', 1, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (3003, 4005, N'root                                                        ', N'folder    ', 568671, N'2016-05-13 18:00:31', NULL, N'MegaUser\root                                                                                                                                                                                           ', 1, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (3010, 4005, N'Картинки                                                    ', N'folder    ', 82438, N'2016-05-13 22:07:28', NULL, N'MegaUser\root\Картинки                                                                                                                                                                                  ', 2, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (3011, 4005, N'Файлы                                                       ', N'folder    ', 486233, N'2016-05-13 22:10:29', NULL, N'MegaUser\root\Файлы                                                                                                                                                                                     ', 1, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (3012, 4005, N'cross.png                                                   ', N'.png      ', 31426, N'2016-05-13 22:10:47', 1, N'MegaUser\root\Картинки\cross.png                                                                                                                                                                        ', 2, N'image/png')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (4003, 4005, N'Addition.pptx                                               ', N'.pptx     ', 114287, N'2016-05-15 00:00:53', 0, N'MegaUser\root\Файлы\Addition.pptx                                                                                                                                                                       ', 2, N'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (5002, 4005, N'TX2Idu2lbaw.jpg                                             ', N'.jpg      ', 49255, N'2016-05-21 14:32:38', 0, N'MegaUser\root\Картинки\TX2Idu2lbaw.jpg                                                                                                                                                                  ', 0, N'image/jpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (5003, 4005, N'saveicon.png                                                ', N'.png      ', 1757, N'2016-05-21 14:39:01', 0, N'MegaUser\root\Картинки\saveicon.png                                                                                                                                                                     ', 1, N'image/png')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (5004, 4005, N'Задание 14.pdf                                              ', N'.pdf      ', 371946, N'2016-05-21 14:39:28', 0, N'MegaUser\root\Файлы\Задание 14.pdf                                                                                                                                                                      ', 0, N'application/rtf')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6003, 6005, N'SuperUser                                                   ', N'folder    ', 17748091, N'2016-05-26 17:17:39', NULL, N'SuperUser                                                                                                                                                                                               ', 1, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6004, 6005, N'root                                                        ', N'folder    ', 17748091, N'2016-05-26 17:17:39', NULL, N'SuperUser\root                                                                                                                                                                                          ', 1, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6005, 6005, N'Файлы                                                       ', N'folder    ', 1004751, N'2016-05-26 17:18:58', NULL, N'SuperUser\root\Файлы                                                                                                                                                                                    ', 0, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6006, 6005, N'Картинки                                                    ', N'folder    ', 2532691, N'2016-05-26 17:19:03', NULL, N'SuperUser\root\Картинки                                                                                                                                                                                 ', 2, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6007, 6005, N'Музыка                                                      ', N'folder    ', 14210649, N'2016-05-26 17:19:10', NULL, N'SuperUser\root\Музыка                                                                                                                                                                                   ', 1, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6008, 6005, N'Вопросы на зачет.pdf                                        ', N'.pdf      ', 58546, N'2016-05-26 17:19:53', 0, N'SuperUser\root\Файлы\Вопросы на зачет.pdf                                                                                                                                                               ', 0, N'application/rtf')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6009, 6005, N'Задание 13.pdf                                              ', N'.pdf      ', 282160, N'2016-05-26 17:20:06', 0, N'SuperUser\root\Файлы\Задание 13.pdf                                                                                                                                                                     ', 0, N'application/rtf')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6010, 6005, N'Задание 14.pdf                                              ', N'.pdf      ', 371946, N'2016-05-26 17:20:17', 0, N'SuperUser\root\Файлы\Задание 14.pdf                                                                                                                                                                     ', 0, N'application/rtf')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6011, 6005, N'Требования к финальным проектам.pdf                         ', N'.pdf      ', 292099, N'2016-05-26 17:20:35', 0, N'SuperUser\root\Файлы\Требования к финальным проектам.pdf                                                                                                                                                ', 0, N'application/rtf')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6012, 6005, N'31.jpg                                                      ', N'.jpg      ', 997024, N'2016-05-26 17:20:58', 0, N'SuperUser\root\Картинки\31.jpg                                                                                                                                                                          ', 0, N'image/jpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6013, 6005, N'32.jpg                                                      ', N'.jpg      ', 763172, N'2016-05-26 17:21:09', 0, N'SuperUser\root\Картинки\32.jpg                                                                                                                                                                          ', 0, N'image/jpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6014, 6005, N'40.jpg                                                      ', N'.jpg      ', 772495, N'2016-05-26 17:21:25', 0, N'SuperUser\root\Картинки\40.jpg                                                                                                                                                                          ', 0, N'image/jpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (6015, 6005, N'3rd_strike_-_flow_heat.mp3                                  ', N'.mp3      ', 3011105, N'2016-05-26 17:25:00', 0, N'SuperUser\root\Музыка\3rd_strike_-_flow_heat.mp3                                                                                                                                                        ', 1, N'audio/mpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (7003, 6005, N'Alice Cooper - Love is a loaded gun.mp3                     ', N'.mp3      ', 6031777, N'2016-05-26 17:44:52', 0, N'SuperUser\root\Музыка\Alice Cooper - Love is a loaded gun.mp3                                                                                                                                           ', 1, N'audio/mpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (7004, 6005, N'Evanescence - Going under.mp3                               ', N'.mp3      ', 5167767, N'2016-05-26 17:46:30', 1, N'SuperUser\root\Музыка\Evanescence - Going under.mp3                                                                                                                                                     ', 1, N'audio/mpeg')
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (9003, 8005, N'User1                                                       ', N'folder    ', 0, N'2016-05-24 00:00:00', NULL, N'User1                                                                                                                                                                                                   ', 0, NULL)
+INSERT INTO [MegaFileStorage].[Files] ([FileID], [OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], [AccessType], [ContentType]) VALUES (9004, 8005, N'root                                                        ', N'folder    ', 0, N'2016-05-24 00:00:00', NULL, N'User1\root                                                                                                                                                                                              ', 0, NULL)
+SET IDENTITY_INSERT [MegaFileStorage].[Files] OFF
 
-/*корневой каталог*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'Admin', 'folder', 0, CONVERT(DATETIME, '20160524', 101), 'Admin', 0)
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='Admin'
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (2030, 2027)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (2031, 2028)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (2032, 2029)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (3003, 3002)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (3005, 3003)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (3006, 3002)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (3010, 3003)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (3011, 3003)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (3012, 3010)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (4002, 3010)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (4003, 3011)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5002, 3010)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5003, 3010)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5004, 3011)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5005, 3006)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5006, 3006)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5007, 3006)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (5009, 5008)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6004, 6003)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6005, 6004)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6006, 6004)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6007, 6004)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6008, 6005)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6009, 6005)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6010, 6005)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6011, 6005)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6012, 6006)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6013, 6006)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6014, 6006)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (6015, 6007)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (7003, 6007)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (7004, 6007)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (8004, 8003)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (8005, 8003)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (8006, 8004)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (8014, 8013)
+INSERT INTO [MegaFileStorage].[Folders] ([ChID], [ParID]) VALUES (9004, 9003)
 
-/*содержимое корневого каталога*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'root', 'folder', 0, CONVERT(DATETIME, '20160524', 101), 'Admin\root', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='Admin\root'
-
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*---------------------------------User1---------------------------------*/
-/*регистрация*/
-INSERT INTO [MegaFileStorage].Users ([UserName], [Pass], [RegistrationDate], [UserType], [Email]) 
-VALUES ('User1', 'qwe123', CONVERT(DATETIME, '20160524', 101), 1, 'user1@mail.ru')
-SELECT  @OwnerID=UserID FROM MegaFileStorage.Users WHERE UserName='User1'
-
-/*корневой каталог*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'User1', 'folder', 0, CONVERT(DATETIME, '20160524', 101), 'User1', 0)
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='User1'
-
-/*содержимое корневого каталога*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'root', 'folder', 0, CONVERT(DATETIME, '20160524', 101), 'User1\root', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='User1\root'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-
-/*---------------------------------MegaUser---------------------------------*/
-/*регистрация*/
-INSERT INTO [MegaFileStorage].Users ([UserName], [Pass], [RegistrationDate], [UserType], [Email]) 
-VALUES ('MegaUser', 'qwe123', CONVERT(DATETIME, '20160524', 101), 1, 'superuser@mail.ru')
-SELECT  @OwnerID=UserID FROM MegaFileStorage.Users WHERE UserName='MegaUser'
-
-/*корневой каталог*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'MegaUser', 'folder', 568671, CONVERT(DATETIME, '20160524', 101), 'MegaUser', 0)
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser'
-
-/*содержимое корневого каталога*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'root', 'folder', 568671, CONVERT(DATETIME, '20160524', 101), 'MegaUser\root', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки root*/
-SET @ParID = @ChID
-
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'Картинки', 'folder', 82438, CONVERT(DATETIME, '20160524', 101), 'MegaUser\root\Картинки', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Картинки'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'Файлы', 'folder', 486233, CONVERT(DATETIME, '20160524', 101), 'MegaUser\root\Файлы', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Файлы'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки Картинки*/
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Картинки'
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'cross.png', '.png', 31426, CONVERT(DATETIME, '20160524', 101), 1, 
-'MegaUser\root\Картинки\cross.png', 2, 'image/png')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Картинки\cross.png'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'TX2Idu2lbaw.jpg', '.jpg', 114287, CONVERT(DATETIME, '20160524', 101), 0, 
-'MegaUser\root\Картинки\TX2Idu2lbaw.jpg', 0, 'image/jpg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Картинки\TX2Idu2lbaw.jpg'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'saveicon.png', '.png', 49255, CONVERT(DATETIME, '20160524', 101), 0, 
-'MegaUser\root\Картинки\saveicon.png', 1, 'image/png')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Картинки\saveicon.png'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки Файлы*/
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Файлы'
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Addition.pptx', '.pptx', 114287, CONVERT(DATETIME, '20160524', 101), 0, 
-'MegaUser\root\Файлы\Addition.pptx', 2, 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Файлы\Addition.pptx'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Задание 14.pdf', '.pdf', 371946, CONVERT(DATETIME, '20160524', 101), 0, 
-'MegaUser\root\Файлы\Задание 14.pdf', 0, 'application/rtf')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='MegaUser\root\Файлы\Задание 14.pdf'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-
-
-
-/*---------------------------------SuperUser---------------------------------*/
-/*регистрация*/
-INSERT INTO [MegaFileStorage].Users ([UserName], [Pass], [RegistrationDate], [UserType], [Email]) 
-VALUES ('SuperUser', 'qwe123', CONVERT(DATETIME, '20160524', 101), 1, 'superpuperuser@mail.ru')
-SELECT  @OwnerID=UserID FROM MegaFileStorage.Users WHERE UserName='SuperUser'
-
-/*корневой каталог*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'SuperUser', 'folder', 17748091, CONVERT(DATETIME, '20160524', 101), 'SuperUser', 0)
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser'
-
-/*содержимое корневого каталога*/
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'root', 'folder', 17748091, CONVERT(DATETIME, '20160524', 101), 'SuperUser\root', 0)
-SELECT ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки root*/
-SET @ParID = @ChID
-
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'Файлы', 'folder', 1004751, CONVERT(DATETIME, '20160524', 101), 'SuperUser\root\Файлы', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Файлы'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'Картинки', 'folder', 2532691, CONVERT(DATETIME, '20160524', 101), 'SuperUser\root\Картинки', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Картинки'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files ([OwnerID], [FileName], [Extension], [Size], [UploadDate], [FullName], [AccessType])
-VALUES(@OwnerID, 'Музыка', 'folder', 14210649, CONVERT(DATETIME, '20160524', 101), 'SuperUser\root\Музыка', 0)
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Музыка'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки Файлы*/
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Файлы'
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Вопросы на зачет.pdf', '.pdf', 58546, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Файлы\Вопросы на зачет.pdf', 0, 'application/rtf')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Файлы\Вопросы на зачет.pdf'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Задание 13.pdf', '.pdf', 282160, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Файлы\Задание 13.pdf', 0, 'application/rtf')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Файлы\Задание 13.pdf'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Задание 14.pdf', '.pdf', 371946, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Файлы\Задание 14.pdf', 0, 'application/rtf')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Файлы\Задание 14.pdf'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Требования к финальным проектам.pdf', '.pdf', 292099, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Файлы\Требования к финальным проектам.pdf', 0, 'application/rtf')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Файлы\Требования к финальным проектам.pdf'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки Картинки*/
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Картинки'
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, '31.jpg', '.jpg', 997024, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Картинки\31.jpg', 0, 'image/jpeg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Картинки\31.jpg'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, '32.jpg', '.jpg', 763172, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Картинки\32.jpg', 0, 'image/jpeg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Картинки\31.jpg'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, '40.jpg', '.jpg', 772495, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Картинки\40.jpg', 0, 'image/jpeg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Картинки\31.jpg'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-/*содержимое папки Музыка*/
-SELECT @ParID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Музыка'
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, '3rd_strike_-_flow_heat.mp3', '.mp3', 3011105, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Музыка\3rd_strike_-_flow_heat.mp3', 1, 'audio/mpeg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Музыка\3rd_strike_-_flow_heat.mp3'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Alice Cooper - Love is a loaded gun.mp3', '.mp3', 6031777, CONVERT(DATETIME, '20160524', 101), 0, 
-'SuperUser\root\Музыка\Alice Cooper - Love is a loaded gun.mp3', 1, 'audio/mpeg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Музыка\Alice Cooper - Love is a loaded gun.mp3'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
-
-INSERT INTO MegaFileStorage.Files([OwnerID], [FileName], [Extension], [Size], [UploadDate], [Downloads], [FullName], 
-[AccessType], [ContentType])
-VALUES(@OwnerID, 'Evanescence - Going under.mp3', '.mp3', 5167767, CONVERT(DATETIME, '20160524', 101), 1, 
-'SuperUser\root\Музыка\Evanescence - Going under.mp3', 1, 'audio/mpeg')
-SELECT @ChID = FileID FROM MegaFileStorage.Files WHERE FullName='SuperUser\root\Музыка\Evanescence - Going under.mp3'
-INSERT INTO MegaFileStorage.Folders ([ChID], [ParID]) VALUES(@ChID, @ParID)
+SET IDENTITY_INSERT [MegaFileStorage].[Access] ON
+INSERT INTO [MegaFileStorage].[Access] ([AccessID], [UserID], [FileID]) VALUES (2, 4005, 3010)
+INSERT INTO [MegaFileStorage].[Access] ([AccessID], [UserID], [FileID]) VALUES (9, 4005, 3012)
+INSERT INTO [MegaFileStorage].[Access] ([AccessID], [UserID], [FileID]) VALUES (13, 4005, 4003)
+INSERT INTO [MegaFileStorage].[Access] ([AccessID], [UserID], [FileID]) VALUES (1002, 6005, 6006)
+INSERT INTO [MegaFileStorage].[Access] ([AccessID], [UserID], [FileID]) VALUES (1003, 4005, 6006)
+SET IDENTITY_INSERT [MegaFileStorage].[Access] OFF
