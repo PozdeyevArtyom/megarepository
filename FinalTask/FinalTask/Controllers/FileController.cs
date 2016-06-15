@@ -45,8 +45,11 @@ namespace FinalTask.Controllers
                 try
                 {
                     Logic.UploadFile(ParentFolder.Id, NewFile);
+                    string filename = fileinfo.UploadedFile.FileName;
+                    if (filename.Contains('\\'))
+                        filename = filename.Substring(filename.IndexOf('\\') + 1);
                     fileinfo.UploadedFile.SaveAs(Logic.GetStorageLocation() + '\\' + ParentFolder.FullName + '\\' 
-                        + fileinfo.UploadedFile.FileName);
+                        + filename);
                     return Redirect("~/Account/Storage?id=" + ParentFolder.Id);
                 }
                 catch (ArgumentException e)

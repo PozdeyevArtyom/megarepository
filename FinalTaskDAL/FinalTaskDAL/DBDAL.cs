@@ -22,7 +22,7 @@ namespace FinalTaskDAL
         /// Метод AddFile добавляет информацию о файле в базу данных
         /// </summary>
         /// <param name="parid"></param>
-        /// <param name="file"></param>
+        /// <param name="file"></param>ww
         /// <returns></returns>
         public bool AddFile(int parid, FileEntity file)
         {
