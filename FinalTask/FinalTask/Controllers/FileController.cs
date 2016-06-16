@@ -30,12 +30,10 @@ namespace FinalTask.Controllers
             {
                 //получаем информацию о родительском каталоге
                 FileEntity ParentFolder = Logic.GetFileById(fileinfo.ParentId);
-
+                
                 //создаём сущность файла и заполняем поля
                 string Extension = "";
-                string filename = fileinfo.UploadedFile.FileName;
-                if (filename.Contains('\\'))
-                    filename = filename.Substring(filename.LastIndexOf('\\') + 1);
+                string filename = System.IO.Path.GetFileName(fileinfo.UploadedFile.FileName);
                 if (filename.Contains('.'))
                     Extension = filename.Substring(filename.LastIndexOf('.'));
                 FileEntity NewFile = new FileEntity(filename,
