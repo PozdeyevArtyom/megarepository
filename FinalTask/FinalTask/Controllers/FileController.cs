@@ -33,21 +33,21 @@ namespace FinalTask.Controllers
 
                 //создаём сущность файла и заполняем поля
                 string Extension = "";
-                if (fileinfo.UploadedFile.FileName.Contains('.'))
-                    Extension = fileinfo.UploadedFile.FileName.Substring(fileinfo.UploadedFile.FileName.LastIndexOf('.'));
-                FileEntity NewFile = new FileEntity(fileinfo.UploadedFile.FileName,
+                string filename = fileinfo.UploadedFile.FileName;
+                if (filename.Contains('\\'))
+                    filename = filename.Substring(filename.LastIndexOf('\\') + 1);
+                if (filename.Contains('.'))
+                    Extension = filename.Substring(filename.LastIndexOf('.'));
+                FileEntity NewFile = new FileEntity(filename,
                     ParentFolder.Owner, Extension,
                     fileinfo.UploadedFile.ContentLength, DateTime.Now, 0,
-                    ParentFolder.FullName + '\\' + fileinfo.UploadedFile.FileName, AccessType.Private, 
+                    ParentFolder.FullName + '\\' + filename, AccessType.Private, 
                     fileinfo.UploadedFile.ContentType);
 
                 //сохраняем файл, если не возникает конфликтов с именем
                 try
                 {
                     Logic.UploadFile(ParentFolder.Id, NewFile);
-                    string filename = fileinfo.UploadedFile.FileName;
-                    if (filename.Contains('\\'))
-                        filename = filename.Substring(filename.LastIndexOf('\\') + 1);
                     fileinfo.UploadedFile.SaveAs(Logic.GetStorageLocation() + '\\' + ParentFolder.FullName + '\\' 
                         + filename);
                     return Redirect("~/Account/Storage?id=" + ParentFolder.Id);
